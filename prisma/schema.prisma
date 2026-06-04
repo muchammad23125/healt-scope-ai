@@ -1,0 +1,63 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  roleId    Int
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Wilayah {
+  id         Int      @id @default(autoincrement())
+  nama       String
+  provinsi   String
+  latitude   Float
+  longitude  Float
+  prediksi   Prediksi[]
+}
+
+model Penyakit {
+  id         Int      @id @default(autoincrement())
+  nama       String
+  slug       String   @unique
+  deskripsi  String
+  prediksi   Prediksi[]
+}
+
+model Prediksi {
+  id               Int       @id @default(autoincrement())
+  wilayahId        Int
+  penyakitId       Int
+  tingkatRisiko    String
+  confidenceScore  Float
+  createdAt        DateTime  @default(now())
+
+  wilayah          Wilayah   @relation(fields: [wilayahId], references: [id])
+  penyakit         Penyakit  @relation(fields: [penyakitId], references: [id])
+}
+
+model Artikel {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  excerpt    String
+  thumbnail  String
+  content    String   @db.LongText
+}
