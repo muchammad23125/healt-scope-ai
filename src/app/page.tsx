@@ -13,7 +13,7 @@ export default function HomePage() {
     <main className="bg-[#F8FAFC] overflow-hidden">
 
       {/* HERO */}
-      <section className="relative min-h-screen bg-[#EAF7F8] overflow-hidden">
+      <section className="relative min-h-[100svh] lg:min-h-screen bg-[#EAF7F8] overflow-hidden">
 
         {/* FULL BACKGROUND IMAGE */}
         <div className="absolute inset-0 z-0">
@@ -22,13 +22,13 @@ export default function HomePage() {
             src="/images/bg-placeholder.png"
             alt="GIS Background"
             className="
-              absolute
-              inset-0
-              w-full
-              h-full
-              object-cover
-              object-center
-            "
+        absolute
+        inset-0
+        w-full
+        h-full
+        object-cover
+        object-center
+      "
           />
 
         </div>
@@ -37,20 +37,44 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#EAF7F8] via-[#EAF7F8]/85 to-transparent z-[1]" />
 
         {/* CONTENT */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 lg:px-6">
 
-          <div className="min-h-screen grid lg:grid-cols-2 items-center gap-10">
+          <div
+            className="
+        min-h-[100svh]
+        lg:min-h-screen
+
+        grid
+        lg:grid-cols-2
+
+        items-center
+        gap-10
+
+        py-16
+        md:py-20
+        lg:py-0
+      "
+          >
 
             {/* LEFT CONTENT */}
             <div className="max-w-2xl">
 
-              <h1 className="
-                text-[72px]
-                leading-[82px]
-                font-extrabold
-                text-slate-900
-                tracking-[-2px]
-              ">
+              <h1
+                className="
+            text-[42px]
+            leading-[50px]
+
+            md:text-[56px]
+            md:leading-[64px]
+
+            lg:text-[72px]
+            lg:leading-[82px]
+
+            font-extrabold
+            text-slate-900
+            tracking-[-2px]
+          "
+              >
                 Waspada Dini,
                 <br />
                 Hidup Lebih{" "}
@@ -59,13 +83,24 @@ export default function HomePage() {
                 </span>
               </h1>
 
-              <p className="
-                mt-8
-                text-[20px]
-                leading-[38px]
-                text-slate-600
-                max-w-2xl
-              ">
+              <p
+                className="
+            mt-6
+            lg:mt-8
+
+            text-[16px]
+            leading-[28px]
+
+            md:text-[18px]
+            md:leading-[32px]
+
+            lg:text-[20px]
+            lg:leading-[38px]
+
+            text-slate-600
+            max-w-2xl
+          "
+              >
                 Health Scope adalah sistem peringatan dini risiko penyakit
                 berbasis data cuaca, historis kesehatan, dan tren pencarian
                 masyarakat.
@@ -75,30 +110,41 @@ export default function HomePage() {
               <div className="mt-10 flex flex-wrap gap-5">
 
                 {/* CARD */}
-                <div className="
-                  bg-white/90
-                  backdrop-blur-md
-                  rounded-3xl
-                  shadow-xl
-                  border
-                  border-white
-                  px-6
-                  py-5
-                  flex
-                  items-center
-                  gap-4
-                  min-w-[240px]
-                ">
+                <div
+                  className="
+              bg-white/90
+              backdrop-blur-md
+              rounded-3xl
+              shadow-xl
+              border
+              border-white
 
-                  <div className="
-                    w-14
-                    h-14
-                    rounded-2xl
-                    bg-cyan-100
-                    flex
-                    items-center
-                    justify-center
-                  ">
+              px-6
+              py-5
+
+              flex
+              items-center
+              gap-4
+
+              w-full
+              sm:w-auto
+
+              lg:min-w-[240px]
+            "
+                >
+
+                  <div
+                    className="
+                w-14
+                h-14
+                shrink-0
+                rounded-2xl
+                bg-cyan-100
+                flex
+                items-center
+                justify-center
+              "
+                  >
                     <CloudRain className="text-cyan-600 w-7 h-7" />
                   </div>
 
@@ -115,30 +161,41 @@ export default function HomePage() {
                 </div>
 
                 {/* CARD */}
-                <div className="
-                  bg-white/90
-                  backdrop-blur-md
-                  rounded-3xl
-                  shadow-xl
-                  border
-                  border-white
-                  px-6
-                  py-5
-                  flex
-                  items-center
-                  gap-4
-                  min-w-[240px]
-                ">
+                <div
+                  className="
+              bg-white/90
+              backdrop-blur-md
+              rounded-3xl
+              shadow-xl
+              border
+              border-white
 
-                  <div className="
-                    w-14
-                    h-14
-                    rounded-2xl
-                    bg-emerald-100
-                    flex
-                    items-center
-                    justify-center
-                  ">
+              px-6
+              py-5
+
+              flex
+              items-center
+              gap-4
+
+              w-full
+              sm:w-auto
+
+              lg:min-w-[240px]
+            "
+                >
+
+                  <div
+                    className="
+                w-14
+                h-14
+                shrink-0
+                rounded-2xl
+                bg-emerald-100
+                flex
+                items-center
+                justify-center
+              "
+                  >
                     <Activity className="text-emerald-600 w-7 h-7" />
                   </div>
 
@@ -148,37 +205,48 @@ export default function HomePage() {
                     </p>
 
                     <p className="text-slate-500">
-                      7–14 Hari
+                      3–7 Hari
                     </p>
                   </div>
 
                 </div>
 
                 {/* CARD */}
-                <div className="
-                  bg-white/90
-                  backdrop-blur-md
-                  rounded-3xl
-                  shadow-xl
-                  border
-                  border-white
-                  px-6
-                  py-5
-                  flex
-                  items-center
-                  gap-4
-                  min-w-[240px]
-                ">
+                <div
+                  className="
+              bg-white/90
+              backdrop-blur-md
+              rounded-3xl
+              shadow-xl
+              border
+              border-white
 
-                  <div className="
-                    w-14
-                    h-14
-                    rounded-2xl
-                    bg-red-100
-                    flex
-                    items-center
-                    justify-center
-                  ">
+              px-6
+              py-5
+
+              flex
+              items-center
+              gap-4
+
+              w-full
+              sm:w-auto
+
+              lg:min-w-[240px]
+            "
+                >
+
+                  <div
+                    className="
+                w-14
+                h-14
+                shrink-0
+                rounded-2xl
+                bg-red-100
+                flex
+                items-center
+                justify-center
+              "
+                  >
                     <HeartPulse className="text-red-500 w-7 h-7" />
                   </div>
 
@@ -199,25 +267,38 @@ export default function HomePage() {
               {/* CTA */}
               <div className="mt-12 flex flex-wrap items-center gap-8">
 
-                {/* BUTTON */}
-                <Link href="/prediksi-wabah">
+                <Link href="/ai-prediksi">
 
-                  <button className="
-      bg-[#0F766E]
-      hover:bg-[#14B8A6]
-      transition-all
-      duration-300
-      text-white
-      px-9
-      py-5
-      rounded-2xl
-      font-bold
-      text-lg
-      shadow-2xl
-      flex
-      items-center
-      gap-3
-    ">
+                  <button
+                    className="
+                bg-[#0F766E]
+                hover:bg-[#14B8A6]
+
+                transition-all
+                duration-300
+
+                text-white
+
+                w-full
+                sm:w-auto
+
+                px-9
+                py-5
+
+                rounded-2xl
+
+                font-bold
+                text-base
+                lg:text-lg
+
+                shadow-2xl
+
+                flex
+                items-center
+                justify-center
+                gap-3
+              "
+                  >
                     Mulai Prediksi Sekarang
 
                     <ArrowRight className="w-5 h-5" />
@@ -225,152 +306,9 @@ export default function HomePage() {
 
                 </Link>
 
-                {/* BUTTON */}
-                <Link href="/edukasi">
-
-                  <button className="
-      text-[#0F766E]
-      font-bold
-      text-lg
-      hover:opacity-70
-      transition-all
-    ">
-                    Pelajari Lebih Lanjut
-                  </button>
-
-                </Link>
-
               </div>
 
             </div>
-
-
-            {/* RIGHT EMPTY */}
-            <div className="relative h-[760px] hidden lg:block">
-
-              {/* FLOATING CARD 1 */}
-              <div className="
-    absolute
-    top-[170px]
-    left-[60px]
-    bg-white/95
-    backdrop-blur-md
-    rounded-3xl
-    shadow-2xl
-    p-6
-    w-64
-  ">
-
-                <p className="text-slate-500 font-medium">
-                  Wilayah Risiko Tinggi
-                </p>
-
-                <div className="mt-3 flex items-center justify-between">
-
-                  <h2 className="text-5xl font-extrabold text-red-600">
-                    25
-                  </h2>
-
-                  <div className="
-        w-14
-        h-14
-        rounded-full
-        bg-red-100
-        flex
-        items-center
-        justify-center
-        text-2xl
-      ">
-                    ⚠️
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* FLOATING CARD 2 */}
-              <div className="
-    absolute
-    top-[170px]
-    right-[-20px]
-    bg-white/95
-    backdrop-blur-md
-    rounded-3xl
-    shadow-2xl
-    p-6
-    w-64
-  ">
-
-                <p className="text-slate-500 font-medium">
-                  Wilayah Risiko Sedang
-                </p>
-
-                <div className="mt-3 flex items-center justify-between">
-
-                  <h2 className="text-5xl font-extrabold text-amber-500">
-                    87
-                  </h2>
-
-                  <div className="
-        w-14
-        h-14
-        rounded-full
-        bg-yellow-100
-        flex
-        items-center
-        justify-center
-        text-2xl
-      ">
-                    ⚠️
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* FLOATING CARD 3 */}
-              <div className="
-    absolute
-    bottom-[220px]
-    right-[30px]
-    bg-white/95
-    backdrop-blur-md
-    rounded-3xl
-    shadow-2xl
-    p-6
-    w-64
-  ">
-
-                <p className="text-slate-500 font-medium">
-                  Wilayah Risiko Rendah
-                </p>
-
-                <div className="mt-3 flex items-center justify-between">
-
-                  <h2 className="text-5xl font-extrabold text-green-600">
-                    142
-                  </h2>
-
-                  <div className="
-        w-14
-        h-14
-        rounded-full
-        bg-green-100
-        flex
-        items-center
-        justify-center
-        text-2xl
-      ">
-                    ✅
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
 
           </div>
 
@@ -557,6 +495,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
 
           {/* HEADER */}
+
           <div className="flex items-center justify-between mb-10">
 
             <h2 className="text-4xl font-bold text-slate-900">

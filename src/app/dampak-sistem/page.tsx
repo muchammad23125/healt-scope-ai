@@ -21,52 +21,81 @@ export default function DampakPage() {
             src="/images/bg-dampak.png"
             alt="Dampak Sistem"
             className="
-              w-full
-              h-full
-              object-cover
-              object-center
-            "
+        w-full
+        h-full
+        object-cover
+        object-center
+      "
           />
 
           {/* DARK OVERLAY */}
-          <div className="
-            absolute
-            inset-0
-            bg-[#012B3B]/55
-          " />
+          <div
+            className="
+        absolute
+        inset-0
+        bg-[#012B3B]/55
+      "
+          />
 
           {/* LEFT GRADIENT */}
-          <div className="
-            absolute
-            inset-0
-            bg-gradient-to-r
-            from-[#012B3B]
-            via-[#012B3B]/70
-            to-transparent
-          " />
+          <div
+            className="
+        absolute
+        inset-0
+        bg-gradient-to-r
+        from-[#012B3B]
+        via-[#012B3B]/70
+        to-transparent
+      "
+          />
 
         </div>
 
         {/* CONTENT */}
-        <div className="
-          relative
-          z-10
-          max-w-7xl
-          mx-auto
-          px-6
-          pt-28
-          pb-36
-        ">
+        <div
+          className="
+      relative
+      z-10
+
+      max-w-7xl
+      mx-auto
+
+      px-5
+      md:px-8
+      lg:px-6
+
+      pt-20
+      pb-24
+
+      md:pt-24
+      md:pb-28
+
+      lg:pt-28
+      lg:pb-36
+    "
+        >
 
           <div className="max-w-3xl">
 
-            <h1 className="
-              text-[62px]
-              leading-[70px]
-              font-extrabold
-              text-white
-              tracking-[-1px]
-            ">
+            <h1
+              className="
+          text-[38px]
+          leading-[46px]
+
+          sm:text-[48px]
+          sm:leading-[56px]
+
+          md:text-[54px]
+          md:leading-[62px]
+
+          lg:text-[62px]
+          lg:leading-[70px]
+
+          font-extrabold
+          text-white
+          tracking-[-1px]
+        "
+            >
               Dampak di
               <br />
 
@@ -75,13 +104,26 @@ export default function DampakPage() {
               </span>
             </h1>
 
-            <p className="
-              mt-8
-              text-[20px]
-              leading-[38px]
-              text-slate-200
-              max-w-2xl
-            ">
+            <p
+              className="
+          mt-6
+          lg:mt-8
+
+          text-[16px]
+          leading-[28px]
+
+          sm:text-[18px]
+          sm:leading-[32px]
+
+          lg:text-[20px]
+          lg:leading-[38px]
+
+          text-slate-200
+
+          max-w-full
+          lg:max-w-2xl
+        "
+            >
               Lihat bagaimana DeteksiBayangan membantu
               masyarakat, pemerintah, dan instansi kesehatan
               dalam mengantisipasi risiko penyakit berbasis

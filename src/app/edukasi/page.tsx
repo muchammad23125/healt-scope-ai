@@ -228,107 +228,6 @@ const penyakitData = {
     ],
   },
 
-  // Diare
-  diare: {
-    nama: "Diare",
-
-    title: "Diare",
-
-    description:
-      "Diare adalah kondisi ketika seseorang mengalami buang air besar lebih sering dari biasanya dengan konsistensi tinja yang cair.",
-
-    section1Title: "Apa Itu Diare?",
-
-    section1Content: [
-      "Diare merupakan gangguan sistem pencernaan yang menyebabkan frekuensi buang air besar meningkat dengan tekstur tinja yang lebih cair.",
-
-      "Penyakit ini dapat terjadi akibat infeksi virus, bakteri, parasit, atau konsumsi makanan dan minuman yang terkontaminasi.",
-
-      "Apabila tidak ditangani dengan baik, diare dapat menyebabkan dehidrasi yang berbahaya terutama pada anak-anak dan lansia.",
-    ],
-
-    symptoms: [
-      {
-        icon: "water",
-        label: "BAB Cair",
-      },
-
-      {
-        icon: "shield",
-        label: "Mual",
-      },
-
-      {
-        icon: "shield",
-        label: "Muntah",
-      },
-
-      {
-        icon: "person",
-        label: "Kram Perut",
-      },
-
-      {
-        icon: "thermometer",
-        label: "Demam",
-      },
-
-      {
-        icon: "water",
-        label: "Dehidrasi",
-      },
-    ],
-
-    causeDescription:
-      "Diare dapat disebabkan oleh infeksi saluran pencernaan atau konsumsi makanan yang terkontaminasi.",
-
-    causeFlow: [
-      {
-        icon: "droplets",
-        title: "Makanan / Air",
-      },
-
-      {
-        icon: "virus",
-        title: "Kuman Masuk",
-      },
-
-      {
-        icon: "person",
-        title: "Gangguan Cerna",
-      },
-
-      {
-        icon: "heart",
-        title: "Diare",
-      },
-    ],
-
-    prevention: [
-      "Mencuci tangan sebelum makan.",
-      "Mengonsumsi air minum yang bersih.",
-      "Memastikan makanan matang sempurna.",
-      "Menjaga kebersihan lingkungan.",
-      "Mencuci buah dan sayuran sebelum dikonsumsi.",
-      "Menghindari makanan yang tidak higienis.",
-    ],
-
-    warning: [
-      "Diare lebih dari 3 hari.",
-      "Muncul tanda dehidrasi.",
-      "Muntah terus menerus.",
-      "Terdapat darah pada tinja.",
-    ],
-
-    facts: [
-      "Diare merupakan salah satu penyebab utama dehidrasi.",
-      "Anak-anak lebih rentan mengalami komplikasi diare.",
-      "Kebersihan makanan sangat berpengaruh terhadap risiko diare.",
-      "Air minum yang aman dapat menurunkan risiko diare.",
-      "Penanganan cepat membantu mencegah komplikasi.",
-    ],
-  },
-
   // Leptospirosis
   leptospirosis: {
     nama: "Leptospirosis",
@@ -452,10 +351,6 @@ export default function EdukasiPage() {
       <Wind className="w-14 h-14 text-[#0F766E]" />
     ),
 
-    diare: (
-      <Droplets className="w-14 h-14 text-[#0F766E]" />
-    ),
-
     leptospirosis: (
       <Rat className="w-14 h-14 text-[#0F766E]" />
     ),
@@ -553,14 +448,6 @@ export default function EdukasiPage() {
     },
 
     {
-      key: "diare",
-      label: "Diare",
-      icon: (
-        <Droplets className="w-6 h-6" />
-      ),
-    },
-
-    {
       key: "leptospirosis",
       label: "Leptospirosis",
       icon: (
@@ -578,11 +465,46 @@ export default function EdukasiPage() {
         {/* HEADER */}
         <div>
 
-          <h1 className="text-[56px] font-bold text-slate-900">
+          <h1
+            className="
+      text-[36px]
+      leading-[44px]
+
+      sm:text-[44px]
+      sm:leading-[52px]
+
+      md:text-[50px]
+      md:leading-[58px]
+
+      lg:text-[56px]
+      lg:leading-[64px]
+
+      font-bold
+      text-slate-900
+    "
+          >
             Edukasi
           </h1>
 
-          <p className="mt-4 text-slate-500 text-lg max-w-xl">
+          <p
+            className="
+      mt-4
+
+      text-[15px]
+      leading-7
+
+      sm:text-base
+
+      md:text-lg
+      md:leading-8
+
+      text-slate-500
+
+      max-w-full
+      sm:max-w-lg
+      lg:max-w-xl
+    "
+          >
             Pelajari informasi dasar tentang berbagai penyakit
             untuk menjaga kesehatan diri dan keluarga.
           </p>
