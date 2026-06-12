@@ -1,15 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import * as turf from "@turf/turf";
 
 import { calculateRisk } from "@/services/riskEngine";
-
 import { predictDisease } from "@/services/diseaseEngine";
-
-import { getRecommendations } from "@/services/recommendationEngine";
-
 import { fetchWeatherData } from "@/services/weatherService";
 
 import Map, {
@@ -20,74 +15,65 @@ import Map, {
   Popup,
 } from "react-map-gl/maplibre";
 
-import { outbreakData } from "@/data/outbreak-data";
+type UserRiskContext = {
+  region: string;
+  province?: string;
+  latitude: number;
+  longitude: number;
+  temperature: number;
+  humidity: number;
+  rain: number;
+  riskScore: number;
+  riskStatus: string;
+  diseasePrediction: string;
+  riskPeriod: string;
+};
 
-export default function RiskMap() {
+type RiskMapProps = {
+  onUserRiskChange?: (data: UserRiskContext) => void;
+};
+
+export default function RiskMap({ onUserRiskChange }: RiskMapProps) {
   const [geojson, setGeojson] = useState<any>(null);
-
   const [hoverInfo, setHoverInfo] = useState<any>(null);
-
   const [selectedArea, setSelectedArea] = useState<any>(null);
 
   const [userLocation, setUserLocation] = useState<any>(null);
-
-  const [gpsAccuracy, setGpsAccuracy] = useState<number>(0);
-
   const [userArea, setUserArea] = useState<any>(null);
 
   const [weatherData, setWeatherData] = useState<any>(null);
-
   const [riskStatus, setRiskStatus] = useState("safe");
-
   const [riskScore, setRiskScore] = useState(0);
-
   const [diseasePrediction, setDiseasePrediction] = useState("-");
-
   const [riskPeriod, setRiskPeriod] = useState("-");
 
   const [showUserPanel, setShowUserPanel] = useState(false);
-
   const [showAreaPanel, setShowAreaPanel] = useState(false);
-
-  const [recommendations, setRecommendations] = useState<string[]>([]);
-
   const [showWeatherDetail, setShowWeatherDetail] = useState(false);
 
   const [dynamicGeojson, setDynamicGeojson] = useState<any>(null);
 
-  /* DATA RISK MAP API */
-
   const [riskMapData, setRiskMapData] = useState<any[]>([]);
-
   const [predictionList, setPredictionList] = useState<any[]>([]);
-
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const [heatmapSummary, setHeatmapSummary] = useState({
     safe: 0,
-
     warning: 0,
-
     high: 0,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-
   const ITEMS_PER_PAGE = 15;
 
   const [todaySummary, setTodaySummary] = useState({
     high: 0,
-
     warning: 0,
-
     safe: 0,
   });
 
   const [topRiskAreas, setTopRiskAreas] = useState<any[]>([]);
-
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-
-  const [firstLocationLoaded, setFirstLocationLoaded] = useState(false);
 
   const [mapSize, setMapSize] = useState({
     width: 0,
@@ -95,24 +81,31 @@ export default function RiskMap() {
   });
 
   const mapRef = useRef<any>(null);
-
   const hasFocusedUser = useRef(false);
 
-  /* LOAD GEOJSON + INITIAL OUTBREAK DATA */
+  // Tambahan koordinat marker AI yang menggunakan lokasi user jika tersedia, atau default jika tidak ada
 
+  // useEffect(() => {
+  //   if (!prediction || !mapRef.current) return;
+
+  //   mapRef.current.flyTo({
+  //     center: [AI_MARKER_COORDINATE.longitude, AI_MARKER_COORDINATE.latitude],
+  //     zoom: 9,
+  //     duration: 1500,
+  //   });
+
+  //   setShowAiPopup(true);
+  // }, [prediction]);
+  /* LOAD GEOJSON + INITIAL OUTBREAK DATA */
   useEffect(() => {
     fetch("/data/indonesia.geojson")
       .then((res) => res.json())
       .then((data) => {
         data.features.forEach((feature: any) => {
           feature.properties.status = "safe";
-
           feature.properties.rainfall = 0;
-
           feature.properties.disease = "-";
-
           feature.properties.province = "-";
-
           feature.properties.period = "7-14 Hari";
         });
 
@@ -135,30 +128,20 @@ export default function RiskMap() {
   }, []);
 
   /* LOAD RISK MAP API + AUTO REFRESH */
-
   useEffect(() => {
     const loadRiskMap = async () => {
       try {
         const response = await fetch("/api/risk-map");
-
         const result = await response.json();
 
         if (result.success) {
-          /* DATA MAP */
-
           setRiskMapData(result.data);
-
-          /* TOP PREDIKSI */
 
           setPredictionList(
             result.data
-
               .filter((item: any) => !item.error)
-
               .sort((a: any, b: any) => b.riskScore - a.riskScore),
           );
-
-          /* HITUNG SUMMARY HARI INI */
 
           const high = result.data.filter(
             (item: any) => item.riskStatus === "high",
@@ -174,30 +157,20 @@ export default function RiskMap() {
 
           setTodaySummary({
             high,
-
             warning,
-
             safe,
           });
 
           setHeatmapSummary({
             high,
-
             warning,
-
             safe,
           });
 
           setLastUpdate(new Date());
 
           console.log("Risk Map API Loaded:", result.data.length);
-
-          console.log("Today Summary:", {
-            high,
-            warning,
-            safe,
-          });
-
+          console.log("Today Summary:", { high, warning, safe });
           console.log(
             "Prediction List:",
             result.data.filter((item: any) => !item.error).slice(0, 5),
@@ -208,11 +181,7 @@ export default function RiskMap() {
       }
     };
 
-    /* LOAD PERTAMA */
-
     loadRiskMap();
-
-    /* AUTO REFRESH 15 MENIT */
 
     const interval = setInterval(loadRiskMap, 15 * 60 * 1000);
 
@@ -222,7 +191,6 @@ export default function RiskMap() {
   }, []);
 
   /* UPDATE WARNA PETA DARI API */
-
   useEffect(() => {
     if (!geojson || !riskMapData.length) {
       return;
@@ -237,9 +205,7 @@ export default function RiskMap() {
 
       if (riskData) {
         feature.properties.status = riskData.riskStatus;
-
         feature.properties.riskScore = riskData.riskScore;
-
         feature.properties.disease = riskData.disease;
       }
     });
@@ -250,19 +216,15 @@ export default function RiskMap() {
   }, [geojson, riskMapData]);
 
   /* TOP 10 RISIKO NASIONAL */
-
   useEffect(() => {
     if (!riskMapData.length) {
       return;
     }
 
     const topAreas = [...riskMapData]
-
       .filter((item) => item.riskScore >= 50)
-
       .sort((a, b) => b.riskScore - a.riskScore)
-
-      .slice(0, 10);
+      .slice(0, 5);
 
     setTopRiskAreas(topAreas);
 
@@ -270,12 +232,9 @@ export default function RiskMap() {
   }, [riskMapData]);
 
   /* RESET PAGINATION SAAT SEARCH */
-
   useEffect(() => {
     setCurrentPage(1);
   }, [searchKeyword]);
-
-  /* FILTER PENCARIAN */
 
   const filteredPredictionList = predictionList.filter((item: any) =>
     item.shapeName?.toLowerCase().includes(searchKeyword.toLowerCase()),
@@ -285,36 +244,10 @@ export default function RiskMap() {
 
   const paginatedPredictionList = filteredPredictionList.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-
     currentPage * ITEMS_PER_PAGE,
   );
 
-  /* UPDATE PETA DARI RISK MAP API */
-
-  useEffect(() => {
-    if (!geojson || riskMapData.length === 0) {
-      return;
-    }
-
-    const updated = JSON.parse(JSON.stringify(geojson));
-
-    updated.features.forEach((feature: any) => {
-      const area = riskMapData.find(
-        (item) => item.shapeName === feature.properties.shapeName,
-      );
-
-      feature.properties.status = area?.riskStatus ?? "safe";
-
-      feature.properties.disease = area?.disease ?? "-";
-    });
-
-    setDynamicGeojson(updated);
-
-    console.log("Risk Map Applied:", riskMapData.length);
-  }, [geojson, riskMapData]);
-
   /* RESPONSIVE MAP SIZE */
-
   useEffect(() => {
     const updateSize = () => {
       setMapSize({
@@ -333,48 +266,37 @@ export default function RiskMap() {
   }, []);
 
   /* GEOLOCATION USER */
-
   useEffect(() => {
     if (!navigator.geolocation) {
       console.log("Geolocation tidak didukung");
-
       return;
     }
 
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const latitude = position.coords.latitude;
-
         const longitude = position.coords.longitude;
-
-        const accuracy = position.coords.accuracy;
 
         setUserLocation({
           latitude,
           longitude,
         });
 
-        setGpsAccuracy(accuracy);
-
         console.log("Realtime Location:", latitude, longitude);
 
         if (!hasFocusedUser.current) {
           mapRef.current?.flyTo({
             center: [longitude, latitude],
-
             zoom: 9,
-
             duration: 2500,
           });
 
           hasFocusedUser.current = true;
         }
       },
-
       (error) => {
         console.error("Gagal mendapatkan lokasi:", error);
       },
-
       {
         enableHighAccuracy: true,
         timeout: 10000,
@@ -388,7 +310,6 @@ export default function RiskMap() {
   }, []);
 
   /* OPEN METEO */
-
   useEffect(() => {
     if (!userLocation) return;
 
@@ -396,7 +317,6 @@ export default function RiskMap() {
       try {
         const data = await fetchWeatherData(
           userLocation.latitude,
-
           userLocation.longitude,
         );
 
@@ -412,36 +332,28 @@ export default function RiskMap() {
   }, [userLocation]);
 
   /* RISK ENGINE */
-
   useEffect(() => {
     if (!weatherData) return;
 
     const humidity = weatherData.humidity ?? 0;
-
     const rain = weatherData.rain ?? 0;
-
     const temperature = weatherData.temperature ?? 0;
 
     const result = calculateRisk(humidity, rain, temperature);
 
     setRiskScore(result.score);
-
     setRiskStatus(result.status);
 
     console.log("Risk Score:", result.score);
-
     console.log("Risk Status:", result.status);
   }, [weatherData]);
 
   /* DISEASE PREDICTION */
-
   useEffect(() => {
     if (!weatherData) return;
 
     const humidity = weatherData.humidity ?? 0;
-
     const rain = weatherData.rain ?? 0;
-
     const temperature = weatherData.temperature ?? 0;
 
     const disease = predictDisease(humidity, rain, temperature);
@@ -450,7 +362,6 @@ export default function RiskMap() {
   }, [weatherData]);
 
   /* RISK PERIOD */
-
   useEffect(() => {
     let period = "-";
 
@@ -465,16 +376,37 @@ export default function RiskMap() {
     setRiskPeriod(period);
   }, [riskScore]);
 
-  /* RECOMMENDATION ENGINE */
-
+  /* KIRIM DATA RISK USER KE PAGE.TSX */
   useEffect(() => {
-    const recs = getRecommendations(diseasePrediction);
+    if (!onUserRiskChange || !userLocation || !weatherData) {
+      return;
+    }
 
-    setRecommendations(recs);
-  }, [diseasePrediction]);
+    onUserRiskChange({
+      region: userArea?.shapeName ?? "Lokasi Anda",
+      province: userArea?.province,
+      latitude: userLocation.latitude,
+      longitude: userLocation.longitude,
+      temperature: weatherData.temperature ?? 0,
+      humidity: weatherData.humidity ?? 0,
+      rain: weatherData.rain ?? 0,
+      riskScore,
+      riskStatus,
+      diseasePrediction,
+      riskPeriod,
+    });
+  }, [
+    onUserRiskChange,
+    userLocation,
+    userArea,
+    weatherData,
+    riskScore,
+    riskStatus,
+    diseasePrediction,
+    riskPeriod,
+  ]);
 
   /* UPDATE WARNA USER AREA */
-
   useEffect(() => {
     if (!dynamicGeojson || !userArea) {
       return;
@@ -492,7 +424,6 @@ export default function RiskMap() {
   }, [riskStatus, userArea]);
 
   /* USER AREA DETECTION */
-
   useEffect(() => {
     if (!userLocation || !geojson) {
       return;
@@ -513,15 +444,10 @@ export default function RiskMap() {
 
       setUserArea({
         shapeName: foundArea.properties?.shapeName,
-
         province: foundArea.properties?.province,
-
         status: foundArea.properties?.status,
-
         rainfall: foundArea.properties?.rainfall,
-
         disease: foundArea.properties?.disease,
-
         period: foundArea.properties?.period,
       });
     }
@@ -529,9 +455,7 @@ export default function RiskMap() {
 
   const getStatusLabel = (status: string) => {
     if (status === "high") return "Risiko Tinggi";
-
     if (status === "warning") return "Waspada";
-
     return "Aman";
   };
 
@@ -540,24 +464,14 @@ export default function RiskMap() {
 
     mapRef.current?.flyTo({
       center: [userLocation.longitude, userLocation.latitude],
-
       zoom: 9,
-
       duration: 1500,
     });
   };
 
   return (
     <div>
-      <div
-        className="
-        relative
-        overflow-hidden
-        rounded-3xl
-        shadow-lg
-        border
-        border-slate-200
-      ">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
         <Map
           ref={mapRef}
           interactiveLayerIds={["kabupaten-fill"]}
@@ -566,19 +480,14 @@ export default function RiskMap() {
 
             if (!feature) {
               setHoverInfo(null);
-
               return;
             }
 
             setHoverInfo({
               x: event.point.x,
-
               y: event.point.y,
-
               shapeName: feature.properties?.shapeName,
-
               province: feature.properties?.province,
-
               status: feature.properties?.status,
             });
           }}
@@ -592,15 +501,10 @@ export default function RiskMap() {
 
             setSelectedArea({
               shapeName: feature.properties?.shapeName,
-
               province: feature.properties?.province,
-
               rainfall: feature.properties?.rainfall,
-
               disease: feature.properties?.disease,
-
               status: feature.properties?.status,
-
               period: feature.properties?.period,
             });
 
@@ -631,31 +535,22 @@ export default function RiskMap() {
               id="indonesia"
               type="geojson"
               data={dynamicGeojson ?? geojson}>
-              {/* WARNA RISIKO */}
-
               <Layer
                 id="kabupaten-fill"
                 type="fill"
                 paint={{
                   "fill-color": [
                     "match",
-
                     ["get", "status"],
-
                     "high",
                     "#EF4444",
-
                     "warning",
                     "#FBBF24",
-
                     "#34D399",
                   ],
-
                   "fill-opacity": 0.65,
                 }}
               />
-
-              {/* BATAS KABUPATEN */}
 
               <Layer
                 id="kabupaten-outline"
@@ -668,43 +563,15 @@ export default function RiskMap() {
             </Source>
           )}
 
-          {/* MARKER LOKASI USER */}
-
           {userLocation && (
             <Marker
               longitude={userLocation.longitude}
               latitude={userLocation.latitude}
               anchor="bottom">
-              <div
-                className="
-          flex
-          flex-col
-          items-center
-        ">
-                <div
-                  className="
-            w-5
-            h-5
-            rounded-full
-            bg-blue-500
-            border-4
-            border-white
-            shadow-lg
-          "
-                />
+              <div className="flex flex-col items-center">
+                <div className="h-5 w-5 rounded-full border-4 border-white bg-blue-500 shadow-lg" />
 
-                <div
-                  className="
-            mt-1
-            px-2
-            py-1
-            rounded-lg
-            bg-white
-            text-xs
-            font-semibold
-            shadow-md
-            whitespace-nowrap
-          ">
+                <div className="mt-1 whitespace-nowrap rounded-lg bg-white px-2 py-1 text-xs font-semibold shadow-md">
                   Posisi Anda
                 </div>
               </div>
@@ -712,55 +579,19 @@ export default function RiskMap() {
           )}
         </Map>
 
-        {/* TOOLTIP HOVER */}
-
         {hoverInfo && (
           <div
-            className="
-      absolute
-      z-30
-      pointer-events-none
-      bg-white
-      border
-      border-slate-200
-      rounded-xl
-      shadow-xl
-      px-4
-      py-3
-      min-w-[220px]
-    "
+            className="pointer-events-none absolute z-30 min-w-[220px] rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl"
             style={{
               left: Math.min(hoverInfo.x + 15, mapSize.width - 280),
-
               top: hoverInfo.y > 500 ? hoverInfo.y - 120 : hoverInfo.y + 15,
             }}>
-            <h4
-              className="
-        font-bold
-        text-slate-900
-      ">
-              {hoverInfo.shapeName}
-            </h4>
+            <h4 className="font-bold text-slate-900">{hoverInfo.shapeName}</h4>
 
-            <p
-              className="
-        text-sm
-        text-slate-500
-        mt-1
-      ">
-              {hoverInfo.province}
-            </p>
+            <p className="mt-1 text-sm text-slate-500">{hoverInfo.province}</p>
 
             <div
-              className="
-        mt-3
-        inline-flex
-        px-3
-        py-1
-        rounded-full
-        text-xs
-        font-semibold
-      "
+              className="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold"
               style={{
                 background:
                   hoverInfo.status === "high"
@@ -768,7 +599,6 @@ export default function RiskMap() {
                     : hoverInfo.status === "warning"
                       ? "#FEF3C7"
                       : "#DCFCE7",
-
                 color:
                   hoverInfo.status === "high"
                     ? "#DC2626"
@@ -776,116 +606,51 @@ export default function RiskMap() {
                       ? "#D97706"
                       : "#15803D",
               }}>
-              {hoverInfo.status === "high"
-                ? "Risiko Tinggi"
-                : hoverInfo.status === "warning"
-                  ? "Waspada"
-                  : "Aman"}
+              {getStatusLabel(hoverInfo.status)}
             </div>
           </div>
         )}
 
         {selectedArea && (
-          <div
-            className="
-      absolute
-      top-5
-      left-5
-      z-30
-    ">
+          <div className="absolute left-5 top-5 z-30">
             {!showAreaPanel ? (
               <button
                 onClick={() => setShowAreaPanel(true)}
-                className="
-          bg-white
-          border
-          border-slate-200
-          rounded-2xl
-          shadow-lg
-          px-4
-          py-3
-          flex
-          items-center
-          gap-3
-          min-w-[190px]
-        ">
-                <div
-                  className="
-            flex-1
-            text-left
-          ">
-                  <div
-                    className="
-              font-semibold
-              text-slate-900
-            ">
+                className="flex min-w-[190px] items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
+                <div className="flex-1 text-left">
+                  <div className="font-semibold text-slate-900">
                     {selectedArea.shapeName}
                   </div>
 
                   <div
-                    className={`
-              text-xs
-              ${
-                selectedArea.status === "high"
-                  ? "text-red-600"
-                  : selectedArea.status === "warning"
-                    ? "text-amber-600"
-                    : "text-emerald-600"
-              }
-            `}>
+                    className={`text-xs ${
+                      selectedArea.status === "high"
+                        ? "text-red-600"
+                        : selectedArea.status === "warning"
+                          ? "text-amber-600"
+                          : "text-emerald-600"
+                    }`}>
                     {getStatusLabel(selectedArea.status)}
                   </div>
                 </div>
 
-                <div
-                  className="
-            text-slate-400
-            text-lg
-          ">
-                  ▼
-                </div>
+                <div className="text-lg text-slate-400">▼</div>
               </button>
             ) : (
-              <div
-                className="
-          bg-white
-          border
-          border-slate-200
-          rounded-2xl
-          shadow-xl
-          p-4
-          w-[280px]
-        ">
-                <div
-                  className="
-            flex
-            justify-between
-            items-center
-            mb-4
-          ">
-                  <h4
-                    className="
-              font-bold
-              text-slate-900
-            ">
+              <div className="w-[280px] rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+                <div className="mb-4 flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900">
                     {selectedArea.shapeName}
                   </h4>
 
                   <button
                     onClick={() => setSelectedArea(null)}
-                    className="
-              text-slate-400
-              hover:text-red-500
-            ">
+                    className="text-slate-400 hover:text-red-500">
                     ✕
                   </button>
                 </div>
 
-                <p
-                  className="
-            text-sm
-            text-slate-500
-          ">
+                <p className="text-sm text-slate-500">
                   {selectedArea.province}
                 </p>
 
@@ -896,35 +661,29 @@ export default function RiskMap() {
                     <span>Status</span>
 
                     <span
-                      className={`
-                font-semibold
-                ${
-                  selectedArea.status === "high"
-                    ? "text-red-600"
-                    : selectedArea.status === "warning"
-                      ? "text-amber-600"
-                      : "text-emerald-600"
-                }
-              `}>
+                      className={`font-semibold ${
+                        selectedArea.status === "high"
+                          ? "text-red-600"
+                          : selectedArea.status === "warning"
+                            ? "text-amber-600"
+                            : "text-emerald-600"
+                      }`}>
                       {getStatusLabel(selectedArea.status)}
                     </span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>Curah Hujan</span>
-
                     <span>{selectedArea.rainfall}%</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>Penyakit</span>
-
                     <span>{selectedArea.disease ?? "-"}</span>
                   </div>
 
                   <div className="flex justify-between">
                     <span>Prediksi</span>
-
                     <span>{selectedArea.period}</span>
                   </div>
                 </div>
@@ -933,128 +692,50 @@ export default function RiskMap() {
           </div>
         )}
 
-        {/* USER AREA */}
-
         {userArea && (
-          <div
-            className="
-      absolute
-      top-5
-      right-20
-      z-30
-    ">
+          <div className="absolute right-20 top-5 z-30">
             {!showUserPanel ? (
               <button
                 onClick={() => setShowUserPanel(true)}
-                className="
-          bg-white
-          border
-          border-slate-200
-          rounded-2xl
-          shadow-lg
-          px-4
-          py-3
-          flex
-          items-center
-          gap-3
-          min-w-[190px]
-          hover:shadow-xl
-          transition-all
-        ">
-                <div
-                  className="
-            text-xl
-          ">
-                  📍
-                </div>
+                className="flex min-w-[190px] items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-lg transition-all hover:shadow-xl">
+                <div className="text-xl">📍</div>
 
-                <div
-                  className="
-            flex-1
-            text-left
-          ">
-                  <div
-                    className="
-              font-semibold
-              text-slate-900
-            ">
+                <div className="flex-1 text-left">
+                  <div className="font-semibold text-slate-900">
                     {userArea.shapeName}
                   </div>
 
                   <div
-                    className={`
-              text-xs
-              ${
-                riskStatus === "high"
-                  ? "text-red-600"
-                  : riskStatus === "warning"
-                    ? "text-amber-600"
-                    : "text-emerald-600"
-              }
-            `}>
+                    className={`text-xs ${
+                      riskStatus === "high"
+                        ? "text-red-600"
+                        : riskStatus === "warning"
+                          ? "text-amber-600"
+                          : "text-emerald-600"
+                    }`}>
                     {getStatusLabel(riskStatus)}
                   </div>
                 </div>
 
-                <div
-                  className="
-            text-slate-400
-            text-lg
-          ">
-                  ▼
-                </div>
+                <div className="text-lg text-slate-400">▼</div>
               </button>
             ) : (
-              <div
-                className="
-          bg-white
-          border
-          border-slate-200
-          rounded-2xl
-          shadow-xl
-          p-4
-          w-[280px]
-        ">
-                <div
-                  className="
-            flex
-            justify-between
-            items-center
-            mb-4
-          ">
-                  <h4
-                    className="
-              font-bold
-              text-slate-900
-            ">
-                    Lokasi Anda
-                  </h4>
+              <div className="w-[280px] rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+                <div className="mb-4 flex items-center justify-between">
+                  <h4 className="font-bold text-slate-900">Lokasi Anda</h4>
 
                   <button
                     onClick={() => setShowUserPanel(false)}
-                    className="
-              text-slate-400
-              hover:text-red-500
-              text-lg
-            ">
+                    className="text-lg text-slate-400 hover:text-red-500">
                     ✕
                   </button>
                 </div>
 
-                <p
-                  className="
-            text-xl
-            font-semibold
-            text-slate-900
-          ">
+                <p className="text-xl font-semibold text-slate-900">
                   {userArea.shapeName}
                 </p>
 
-                <p
-                  className="
-            text-sm
-            text-slate-500
-          ">
+                <p className="text-sm text-slate-500">
                   {userArea.province ?? "-"}
                 </p>
 
@@ -1065,16 +746,13 @@ export default function RiskMap() {
                     <span className="text-slate-500">Status</span>
 
                     <span
-                      className={`
-                font-semibold
-                ${
-                  riskStatus === "high"
-                    ? "text-red-600"
-                    : riskStatus === "warning"
-                      ? "text-amber-600"
-                      : "text-emerald-600"
-                }
-              `}>
+                      className={`font-semibold ${
+                        riskStatus === "high"
+                          ? "text-red-600"
+                          : riskStatus === "warning"
+                            ? "text-amber-600"
+                            : "text-emerald-600"
+                      }`}>
                       {getStatusLabel(riskStatus)}
                     </span>
                   </div>
@@ -1082,11 +760,7 @@ export default function RiskMap() {
                   <div className="flex justify-between">
                     <span className="text-slate-500">Potensi Penyakit</span>
 
-                    <span
-                      className="
-                font-semibold
-                text-slate-900
-              ">
+                    <span className="font-semibold text-slate-900">
                       {diseasePrediction}
                     </span>
                   </div>
@@ -1094,89 +768,29 @@ export default function RiskMap() {
                   <div className="flex justify-between">
                     <span className="text-slate-500">Periode Risiko</span>
 
-                    <span
-                      className="
-                font-semibold
-                text-slate-900
-              ">
+                    <span className="font-semibold text-slate-900">
                       {riskPeriod}
                     </span>
                   </div>
 
                   <hr className="my-2" />
 
-                  <div>
-                    <p
-                      className="
-                text-slate-500
-                mb-2
-              ">
-                      Rekomendasi
-                    </p>
-
-                    <ul
-                      className="
-                space-y-1
-                text-sm
-                text-slate-700
-              ">
-                      {recommendations.map((item, index) => (
-                        <li
-                          key={index}
-                          className="
-                      flex
-                      gap-2
-                      items-start
-                    ">
-                          <span
-                            className="
-                        text-emerald-600
-                        font-bold
-                      ">
-                            •
-                          </span>
-
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <hr className="my-2" />
-
                   <button
                     onClick={() => setShowWeatherDetail(!showWeatherDetail)}
-                    className="
-              w-full
-              flex
-              justify-between
-              items-center
-              text-sm
-              font-medium
-              text-slate-700
-            ">
+                    className="flex w-full items-center justify-between text-sm font-medium text-slate-700">
                     <span>Detail Cuaca</span>
-
                     <span>{showWeatherDetail ? "▲" : "▼"}</span>
                   </button>
 
                   {showWeatherDetail && (
-                    <div
-                      className="
-                pt-3
-                border-t
-                border-slate-200
-                space-y-2
-              ">
+                    <div className="space-y-2 border-t border-slate-200 pt-3">
                       <div className="flex justify-between">
                         <span className="text-slate-500">Risk Score</span>
-
                         <span className="font-semibold">{riskScore}/100</span>
                       </div>
 
                       <div className="flex justify-between">
                         <span className="text-slate-500">Suhu</span>
-
                         <span className="font-semibold">
                           {weatherData?.temperature}°C
                         </span>
@@ -1184,7 +798,6 @@ export default function RiskMap() {
 
                       <div className="flex justify-between">
                         <span className="text-slate-500">Kelembapan</span>
-
                         <span className="font-semibold">
                           {weatherData?.humidity}%
                         </span>
@@ -1192,7 +805,6 @@ export default function RiskMap() {
 
                       <div className="flex justify-between">
                         <span className="text-slate-500">Curah Hujan</span>
-
                         <span className="font-semibold">
                           {weatherData?.rain} mm
                         </span>
@@ -1205,195 +817,59 @@ export default function RiskMap() {
           </div>
         )}
 
-        {/* BUTTON LOKASI SAYA */}
-
         <button
           onClick={flyToUserLocation}
           title="Lokasi Saya"
-          className="
-    absolute
-    top-[70px]
-    right-[10px]
-    z-40
-
-    w-[30px]
-    h-[30px]
-
-    bg-white
-
-    border
-    border-slate-300
-
-    shadow-sm
-
-    flex
-    items-center
-    justify-center
-
-    text-[16px]
-    font-bold
-
-    hover:bg-slate-50
-  ">
+          className="absolute right-[10px] top-[70px] z-40 flex h-[30px] w-[30px] items-center justify-center border border-slate-300 bg-white text-[16px] font-bold shadow-sm hover:bg-slate-50">
           ⌖
         </button>
 
-        {/* LEGEND */}
-
-        <div
-          className="
-    absolute
-    bottom-5
-    right-5
-    bg-white/95
-    backdrop-blur-sm
-    rounded-2xl
-    shadow-xl
-    border
-    border-slate-200
-    p-4
-    z-40
-    w-[190px]
-          ">
-          <h4
-            className="
-              font-bold
-              text-slate-900
-              mb-3
-            ">
-            Status Risiko
-          </h4>
+        <div className="absolute bottom-5 right-5 z-40 w-[190px] rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur-sm">
+          <h4 className="mb-3 font-bold text-slate-900">Status Risiko</h4>
 
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div
-                className="
-                  w-4
-                  h-4
-                  rounded-full
-                  bg-[#34D399]
-                "
-              />
-
-              <span
-                className="
-                  text-sm
-                  text-slate-700
-                ">
-                Aman
-              </span>
+              <div className="h-4 w-4 rounded-full bg-[#34D399]" />
+              <span className="text-sm text-slate-700">Aman</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div
-                className="
-                  w-4
-                  h-4
-                  rounded-full
-                  bg-[#FBBF24]
-                "
-              />
-
-              <span
-                className="
-                  text-sm
-                  text-slate-700
-                ">
-                Waspada
-              </span>
+              <div className="h-4 w-4 rounded-full bg-[#FBBF24]" />
+              <span className="text-sm text-slate-700">Waspada</span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div
-                className="
-                  w-4
-                  h-4
-                  rounded-full
-                  bg-[#EF4444]
-                "
-              />
-
-              <span
-                className="
-                  text-sm
-                  text-slate-700
-                ">
-                Risiko Tinggi
-              </span>
+              <div className="h-4 w-4 rounded-full bg-[#EF4444]" />
+              <span className="text-sm text-slate-700">Risiko Tinggi</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* TOP 10 RISIKO NASIONAL */}
-
-      <div
-        className="
-          mt-8
-          bg-white
-          rounded-2xl
-          border
-          border-slate-200
-          shadow-sm
-          p-6
-        ">
-        <h3
-          className="
-            text-xl
-            font-bold
-            text-slate-900
-            mb-4
-          ">
-          Top 10 Risiko Tertinggi Nasional
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-xl font-bold text-slate-900">
+          Top 5 Risiko Tertinggi Nasional
         </h3>
 
         <div className="space-y-3">
           {topRiskAreas.map((area, index) => (
             <div
               key={area.shapeName}
-              className="
-                  flex
-                  items-center
-                  justify-between
-                  border-b
-                  border-slate-100
-                  pb-3
-                ">
+              className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <div
-                  className="
-                      font-semibold
-                      text-slate-900
-                    ">
+                <div className="font-semibold text-slate-900">
                   {index + 1}. {area.shapeName}
-                </div>
-
-                <div
-                  className="
-                      text-sm
-                      text-slate-500
-                    ">
-                  Risk Score: {area.riskScore}
-                  /100
                 </div>
               </div>
 
               <span
-                className={`
-                    px-3
-                    py-1
-                    rounded-full
-                    text-xs
-                    font-semibold
-
-                    ${
-                      area.riskStatus === "high"
-                        ? "bg-red-100 text-red-700"
-                        : area.riskStatus === "warning"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-emerald-100 text-emerald-700"
-                    }
-                  `}>
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  area.riskStatus === "high"
+                    ? "bg-red-100 text-red-700"
+                    : area.riskStatus === "warning"
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-emerald-100 text-emerald-700"
+                }`}>
                 {getStatusLabel(area.riskStatus)}
               </span>
             </div>
@@ -1401,44 +877,14 @@ export default function RiskMap() {
         </div>
       </div>
 
-      {/* PREDIKSI RISIKO NASIONAL */}
-
-      <div
-        className="
-    mt-8
-    bg-white
-    rounded-2xl
-    border
-    border-slate-200
-    shadow-sm
-    p-6
-  ">
-        <div
-          className="
-      flex
-      flex-col
-      md:flex-row
-      md:items-center
-      md:justify-between
-      gap-4
-      mb-6
-    ">
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3
-              className="
-          text-xl
-          font-bold
-          text-slate-900
-        ">
+            <h3 className="text-xl font-bold text-slate-900">
               Prediksi Risiko Nasional
             </h3>
 
-            <p
-              className="
-          text-sm
-          text-slate-500
-          mt-1
-        ">
+            <p className="mt-1 text-sm text-slate-500">
               Status Hari Ini, 3 Hari Kedepan, dan 7 Hari Kedepan
             </p>
           </div>
@@ -1448,119 +894,61 @@ export default function RiskMap() {
             placeholder="Cari wilayah..."
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            className="
-        w-full
-        md:w-[320px]
-        px-4
-        py-2
-        border
-        border-slate-300
-        rounded-xl
-        outline-none
-        focus:ring-2
-        focus:ring-blue-500
-      "
+            className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 md:w-[320px]"
           />
         </div>
 
         <div className="overflow-x-auto">
-          <table
-            className="
-      w-full
-      text-sm
-      border-collapse
-    ">
+          <table className="w-full border-collapse text-sm">
             <thead>
-              <tr
-                className="
-          border-b
-          bg-slate-50
-        ">
-                <th className="text-left p-4">Wilayah</th>
-
-                <th className="text-center p-4">Hari Ini</th>
-
-                <th className="text-center p-4">+3 Hari</th>
-
-                <th className="text-center p-4">+7 Hari</th>
+              <tr className="border-b bg-slate-50">
+                <th className="p-4 text-left">Wilayah</th>
+                <th className="p-4 text-center">Hari Ini</th>
+                <th className="p-4 text-center">+3 Hari</th>
+                <th className="p-4 text-center">+7 Hari</th>
               </tr>
             </thead>
 
             <tbody>
               {paginatedPredictionList.map((area) => (
-                <tr
-                  key={area.shapeName}
-                  className="
-              border-b
-              border-slate-100
-            ">
-                  <td
-                    className="
-                p-4
-                font-medium
-              ">
-                    {area.shapeName}
-                  </td>
+                <tr key={area.shapeName} className="border-b border-slate-100">
+                  <td className="p-4 font-medium">{area.shapeName}</td>
 
                   <td className="text-center">
                     <span
-                      className={`
-                  px-3
-                  py-1
-                  rounded-full
-                  text-xs
-                  font-semibold
-
-                  ${
-                    area.todayStatus === "high"
-                      ? "bg-red-100 text-red-700"
-                      : area.todayStatus === "warning"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-emerald-100 text-emerald-700"
-                  }
-                `}>
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        area.todayStatus === "high"
+                          ? "bg-red-100 text-red-700"
+                          : area.todayStatus === "warning"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-emerald-100 text-emerald-700"
+                      }`}>
                       {getStatusLabel(area.todayStatus)}
                     </span>
                   </td>
 
                   <td className="text-center">
                     <span
-                      className={`
-                  px-3
-                  py-1
-                  rounded-full
-                  text-xs
-                  font-semibold
-
-                  ${
-                    area.day3Status === "high"
-                      ? "bg-red-100 text-red-700"
-                      : area.day3Status === "warning"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-emerald-100 text-emerald-700"
-                  }
-                `}>
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        area.day3Status === "high"
+                          ? "bg-red-100 text-red-700"
+                          : area.day3Status === "warning"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-emerald-100 text-emerald-700"
+                      }`}>
                       {getStatusLabel(area.day3Status)}
                     </span>
                   </td>
 
                   <td className="text-center">
                     <span
-                      className={`
-                  px-3
-                  py-1
-                  rounded-full
-                  text-xs
-                  font-semibold
-
-                  ${
-                    area.day7Status === "high"
-                      ? "bg-red-100 text-red-700"
-                      : area.day7Status === "warning"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-emerald-100 text-emerald-700"
-                  }
-                `}>
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        area.day7Status === "high"
+                          ? "bg-red-100 text-red-700"
+                          : area.day7Status === "warning"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-emerald-100 text-emerald-700"
+                      }`}>
                       {getStatusLabel(area.day7Status)}
                     </span>
                   </td>
@@ -1569,44 +957,20 @@ export default function RiskMap() {
             </tbody>
           </table>
 
-          {/* INFO DATA */}
-
-          <div
-            className="
-      mt-4
-      text-sm
-      text-slate-500
-    ">
-            Menampilkan {(currentPage - 1) * ITEMS_PER_PAGE + 1}-{" "}
+          <div className="mt-4 text-sm text-slate-500">
+            Menampilkan {(currentPage - 1) * ITEMS_PER_PAGE + 1}-
             {Math.min(
               currentPage * ITEMS_PER_PAGE,
               filteredPredictionList.length,
-            )}
-            dari {filteredPredictionList.length}
-            wilayah
+            )}{" "}
+            dari {filteredPredictionList.length} wilayah
           </div>
 
-          {/* PAGINATION */}
-
-          <div
-            className="
-      flex
-      justify-center
-      items-center
-      gap-2
-      mt-6
-    ">
+          <div className="mt-6 flex items-center justify-center gap-2">
             <button
               onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
               disabled={currentPage === 1}
-              className="
-        px-4
-        py-2
-        rounded-lg
-        border
-        border-slate-300
-        disabled:opacity-50
-      ">
+              className="rounded-lg border border-slate-300 px-4 py-2 disabled:opacity-50">
               Prev
             </button>
 
@@ -1619,17 +983,11 @@ export default function RiskMap() {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`
-          px-3
-          py-2
-          rounded-lg
-
-          ${
-            currentPage === page
-              ? "bg-blue-600 text-white"
-              : "border border-slate-300"
-          }
-        `}>
+                className={`rounded-lg px-3 py-2 ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "border border-slate-300"
+                }`}>
                 {page}
               </button>
             ))}
@@ -1639,95 +997,12 @@ export default function RiskMap() {
                 setCurrentPage(Math.min(currentPage + 1, totalPages))
               }
               disabled={currentPage === totalPages}
-              className="
-        px-4
-        py-2
-        rounded-lg
-        border
-        border-slate-300
-        disabled:opacity-50
-      ">
+              className="rounded-lg border border-slate-300 px-4 py-2 disabled:opacity-50">
               Next
             </button>
           </div>
         </div>
       </div>
-
-      {/* PREDIKSI HARI INI */}
-
-      {false && (
-        <div
-          className="
-  mt-6
-  bg-white
-  rounded-3xl
-  shadow-lg
-  border
-  border-slate-200
-  p-6
-">
-          <h2
-            className="
-    text-2xl
-    font-bold
-    mb-5
-  ">
-            Prediksi Risiko Hari Ini
-          </h2>
-
-          <div
-            className="
-    grid
-    md:grid-cols-3
-    gap-4
-  ">
-            <div
-              className="
-      bg-red-50
-      border
-      border-red-200
-      rounded-2xl
-      p-5
-    ">
-              <p className="text-red-600 font-semibold">Risiko Tinggi</p>
-
-              <p className="text-4xl font-bold">{todaySummary.high}</p>
-
-              <p className="text-sm text-slate-500">Wilayah</p>
-            </div>
-
-            <div
-              className="
-      bg-amber-50
-      border
-      border-amber-200
-      rounded-2xl
-      p-5
-    ">
-              <p className="text-amber-600 font-semibold">Waspada</p>
-
-              <p className="text-4xl font-bold">{todaySummary.warning}</p>
-
-              <p className="text-sm text-slate-500">Wilayah</p>
-            </div>
-
-            <div
-              className="
-      bg-emerald-50
-      border
-      border-emerald-200
-      rounded-2xl
-      p-5
-    ">
-              <p className="text-emerald-600 font-semibold">Aman</p>
-
-              <p className="text-4xl font-bold">{todaySummary.safe}</p>
-
-              <p className="text-sm text-slate-500">Wilayah</p>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

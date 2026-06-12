@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Footer from "@/components/layout/Footer";
+// import "maplibre-gl/dist/maplibre-gl.css";  
 
 export default function RootLayout({
   children,

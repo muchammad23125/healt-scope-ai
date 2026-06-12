@@ -7,7 +7,11 @@
 ```bash
 npm install
 ```
-
+## SETUP NEXT.JS 15
+Install
+npx create-next-app@latest health-scope
+## wocoen 
+https://chatgpt.com/share/6a21d806-b548-83ec-904b-b5c4e843dbb9
 ## Database
 
 ```bash
