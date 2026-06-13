@@ -5,7 +5,6 @@ import * as turf from "@turf/turf";
 import { useUserRisk } from "@/context/UserRiskContext";
 
 import { calculateRisk } from "@/services/riskEngine";
-import { predictDisease } from "@/services/diseaseEngine";
 import { fetchWeatherData } from "@/services/weatherService";
 
 import Map, {
@@ -19,15 +18,16 @@ import Map, {
 type UserRiskContext = {
   region: string;
   province?: string;
+
   latitude: number;
   longitude: number;
+
   temperature: number;
   humidity: number;
   rain: number;
+
   riskScore: number;
   riskStatus: string;
-  diseasePrediction: string;
-  riskPeriod: string;
 };
 
 type RiskMapProps = {
@@ -46,8 +46,6 @@ export default function RiskMap({ onUserRiskChange }: RiskMapProps) {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [riskStatus, setRiskStatus] = useState("safe");
   const [riskScore, setRiskScore] = useState(0);
-  const [diseasePrediction, setDiseasePrediction] = useState("-");
-  const [riskPeriod, setRiskPeriod] = useState("-");
 
   const [showUserPanel, setShowUserPanel] = useState(false);
   const [showAreaPanel, setShowAreaPanel] = useState(false);
@@ -358,9 +356,6 @@ export default function RiskMap({ onUserRiskChange }: RiskMapProps) {
     const rain = weatherData.rain ?? 0;
     const temperature = weatherData.temperature ?? 0;
 
-    const disease = predictDisease(humidity, rain, temperature);
-
-    setDiseasePrediction(disease);
   }, [weatherData]);
 
   /* RISK PERIOD */
@@ -375,65 +370,38 @@ export default function RiskMap({ onUserRiskChange }: RiskMapProps) {
       period = "7-14 Hari";
     }
 
-    setRiskPeriod(period);
   }, [riskScore]);
 
-  /* SIMPAN DATA USER RISK KE LOCAL STORAGE */
+  /* SIMPAN DATA USER RISK KE CONTEXT */
   useEffect(() => {
-
-    if (
-      !userLocation ||
-      !weatherData
-    ) {
+    if (!userLocation || !weatherData) {
       return;
     }
 
     const riskContext = {
-      region:
-        userArea?.shapeName ??
-        "Lokasi Anda",
+      region: userArea?.shapeName ?? "Lokasi Anda",
+      province: userArea?.province,
 
-      province:
-        userArea?.province,
+      latitude: userLocation.latitude,
+      longitude: userLocation.longitude,
 
-      latitude:
-        userLocation.latitude,
-
-      longitude:
-        userLocation.longitude,
-
-      temperature:
-        weatherData.temperature ?? 0,
-
-      humidity:
-        weatherData.humidity ?? 0,
-
-      rain:
-        weatherData.rain ?? 0,
+      temperature: weatherData.temperature ?? 0,
+      humidity: weatherData.humidity ?? 0,
+      rain: weatherData.rain ?? 0,
 
       riskScore,
-
       riskStatus,
-
-      diseasePrediction,
-
-      riskPeriod,
     };
 
     setUserRisk(riskContext);
 
-    onUserRiskChange?.(
-      riskContext
-    );
-
+    onUserRiskChange?.(riskContext);
   }, [
     userLocation,
     userArea,
     weatherData,
     riskScore,
     riskStatus,
-    diseasePrediction,
-    riskPeriod,
     onUserRiskChange,
     setUserRisk,
   ]);
@@ -782,22 +750,6 @@ export default function RiskMap({ onUserRiskChange }: RiskMapProps) {
                           : "text-emerald-600"
                         }`}>
                       {getStatusLabel(riskStatus)}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Potensi Penyakit</span>
-
-                    <span className="font-semibold text-slate-900">
-                      {diseasePrediction}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Periode Risiko</span>
-
-                    <span className="font-semibold text-slate-900">
-                      {riskPeriod}
                     </span>
                   </div>
 

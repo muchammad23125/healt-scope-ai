@@ -1,4 +1,9 @@
-export type DiseaseType = "DBD" | "ISPA" | "Diare";
+export type DiseaseType =
+  | "DBD"
+  | "ISPA"
+  | "Leptospirosis"
+  | "Heat Stress"
+  | "Dermatitis";
 export type RiskLevel = "Aman" | "Waspada" | "Siaga" | "Bahaya";
 
 export type ExplainableFactor = {
@@ -43,7 +48,7 @@ function generatePublicSummary(input: AiHealthAdvisoryInput) {
 
 function generatePublicMessage(
   input: AiHealthAdvisoryInput,
-  topFactors: string[]
+  topFactors: string[],
 ) {
   if (input.riskLevel === "Aman") {
     return `Kondisi wilayah ${input.region} saat ini relatif aman untuk risiko ${input.disease}. Masyarakat tetap disarankan menjaga kebersihan lingkungan dan memantau informasi kesehatan secara berkala.`;
@@ -108,20 +113,24 @@ function generateInstitutionAdvice(input: AiHealthAdvisoryInput) {
     ];
   }
 
-  if (input.disease === "Diare") {
+  if (input.disease === "Leptospirosis") {
     if (input.riskLevel === "Bahaya") {
       return [
-        "Koordinasikan pemeriksaan kualitas air bersih.",
-        "Siapkan layanan kesehatan untuk potensi kasus dehidrasi.",
-        "Prioritaskan edukasi sanitasi pada wilayah rawan genangan.",
+        "Hindari kontak dengan genangan air.",
+        "Gunakan alas kaki saat beraktivitas di area lembap.",
+        "Segera periksa ke fasilitas kesehatan jika mengalami demam tinggi.",
       ];
     }
+  }
 
-    return [
-      "Pantau kebersihan sumber air masyarakat.",
-      "Lakukan edukasi cuci tangan dan keamanan pangan.",
-      "Waspadai wilayah dengan genangan atau sanitasi buruk.",
-    ];
+  if (input.disease === "Heat Stress") {
+    if (input.riskLevel === "Bahaya") {
+      return [
+        "Kurangi aktivitas luar ruangan pada siang hari.",
+        "Perbanyak konsumsi air putih.",
+        "Gunakan pakaian yang ringan dan menyerap keringat.",
+      ];
+    }
   }
 
   return [

@@ -11,7 +11,7 @@ export const diseaseRecommendations = {
       "Menguras tempat penampungan air",
       "Menutup wadah air",
       "Menggunakan lotion anti nyamuk",
-      "Memasang kawat kasa"
+      "Memasang kawat kasa",
     ],
 
   },
@@ -28,23 +28,7 @@ export const diseaseRecommendations = {
       "Menggunakan masker",
       "Menjaga ventilasi rumah",
       "Menghindari asap rokok",
-      "Menjaga daya tahan tubuh"
-    ],
-
-  },
-
-  Diare: {
-
-    title: "Diare",
-
-    recommendation:
-      "Pastikan konsumsi makanan dan air yang bersih serta menjaga kebersihan tangan.",
-
-    prevention: [
-      "Mencuci tangan",
-      "Mengonsumsi air matang",
-      "Menjaga kebersihan makanan",
-      "Sanitasi lingkungan"
+      "Menjaga daya tahan tubuh",
     ],
 
   },
@@ -54,13 +38,45 @@ export const diseaseRecommendations = {
     title: "Leptospirosis",
 
     recommendation:
-      "Hindari kontak langsung dengan genangan banjir dan gunakan alas kaki saat beraktivitas.",
+      "Hindari kontak langsung dengan genangan air atau banjir dan gunakan alat pelindung saat beraktivitas di area berisiko.",
 
     prevention: [
       "Menghindari genangan banjir",
       "Menggunakan sepatu boot",
       "Menjaga kebersihan lingkungan",
-      "Mengendalikan populasi tikus"
+      "Mengendalikan populasi tikus",
+    ],
+
+  },
+
+  "Heat Stress": {
+
+    title: "Heat Stress",
+
+    recommendation:
+      "Batasi aktivitas fisik berat saat suhu tinggi, perbanyak konsumsi air putih, dan hindari paparan sinar matahari berlebihan.",
+
+    prevention: [
+      "Minum air putih secara teratur",
+      "Menggunakan pakaian ringan",
+      "Menghindari aktivitas siang hari",
+      "Beristirahat di tempat teduh",
+    ],
+
+  },
+
+  Dermatitis: {
+
+    title: "Dermatitis",
+
+    recommendation:
+      "Jaga kebersihan kulit, hindari paparan bahan iritan, dan gunakan pelembap untuk menjaga kesehatan kulit.",
+
+    prevention: [
+      "Menjaga kebersihan kulit",
+      "Menggunakan pakaian bersih dan kering",
+      "Menghindari bahan pemicu iritasi",
+      "Menggunakan pelembap kulit",
     ],
 
   },

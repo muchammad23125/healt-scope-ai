@@ -1,10 +1,21 @@
-type RiskLevel = "Aman" | "Waspada" | "Siaga" | "Bahaya";
-type DiseaseType = "DBD" | "ISPA" | "Diare";
+type RiskLevel =
+  | "Aman"
+  | "Waspada"
+  | "Siaga"
+  | "Bahaya";
+
+type DiseaseType =
+  | "DBD"
+  | "ISPA"
+  | "Leptospirosis"
+  | "Heat Stress"
+  | "Dermatitis";
 
 export function generateRecommendations(
   disease: DiseaseType,
-  riskLevel: RiskLevel
+  riskLevel: RiskLevel,
 ) {
+
   if (riskLevel === "Aman") {
     return [
       "Tetap jaga kebersihan lingkungan.",
@@ -12,7 +23,11 @@ export function generateRecommendations(
     ];
   }
 
-  const recommendations: Record<DiseaseType, Record<RiskLevel, string[]>> = {
+  const recommendations: Record<
+    DiseaseType,
+    Record<RiskLevel, string[]>
+  > = {
+
     DBD: {
       Aman: [],
       Waspada: [
@@ -33,6 +48,7 @@ export function generateRecommendations(
         "Tingkatkan kesiapan fasilitas kesehatan setempat.",
       ],
     },
+
     ISPA: {
       Aman: [],
       Waspada: [
@@ -53,26 +69,70 @@ export function generateRecommendations(
         "Pantau kelompok rentan seperti anak-anak dan lansia.",
       ],
     },
-    Diare: {
+
+    Leptospirosis: {
       Aman: [],
       Waspada: [
-        "Biasakan cuci tangan menggunakan sabun.",
-        "Pastikan air minum dimasak atau berasal dari sumber aman.",
-        "Hindari konsumsi makanan yang tidak higienis.",
+        "Hindari kontak langsung dengan genangan air.",
+        "Gunakan alas kaki saat beraktivitas di area lembap.",
+        "Jaga kebersihan lingkungan sekitar rumah.",
       ],
       Siaga: [
-        "Pantau kebersihan sumber air masyarakat.",
-        "Lakukan edukasi sanitasi dan keamanan pangan.",
-        "Waspadai wilayah dengan genangan atau banjir.",
-        "Segera periksa jika mengalami diare berkepanjangan.",
+        "Batasi aktivitas di wilayah yang berpotensi banjir.",
+        "Gunakan sarung tangan dan sepatu boot saat membersihkan genangan.",
+        "Lakukan pengendalian tikus di lingkungan sekitar.",
+        "Segera periksa ke fasilitas kesehatan jika mengalami demam tinggi.",
       ],
       Bahaya: [
-        "Aktifkan edukasi darurat terkait air bersih dan sanitasi.",
-        "Koordinasikan pemeriksaan kualitas air.",
-        "Siapkan layanan kesehatan untuk penanganan dehidrasi.",
-        "Prioritaskan bantuan pada wilayah dengan sanitasi buruk.",
+        "Aktifkan peringatan kesehatan pada wilayah terdampak banjir.",
+        "Distribusikan alat pelindung diri bagi masyarakat berisiko.",
+        "Lakukan pengawasan kasus leptospirosis secara aktif.",
+        "Percepat penanganan pasien dengan gejala demam dan nyeri otot berat.",
       ],
     },
+
+    "Heat Stress": {
+      Aman: [],
+      Waspada: [
+        "Perbanyak konsumsi air putih setiap hari.",
+        "Kurangi aktivitas fisik berat saat cuaca panas.",
+        "Gunakan pakaian yang ringan dan menyerap keringat.",
+      ],
+      Siaga: [
+        "Batasi aktivitas luar ruangan pada siang hari.",
+        "Cari tempat teduh atau ruangan berpendingin saat suhu meningkat.",
+        "Pantau kondisi kelompok rentan seperti lansia dan anak-anak.",
+        "Perhatikan tanda awal dehidrasi dan kelelahan panas.",
+      ],
+      Bahaya: [
+        "Keluarkan peringatan cuaca panas ekstrem kepada masyarakat.",
+        "Hentikan aktivitas luar ruangan yang tidak mendesak.",
+        "Sediakan pos kesehatan untuk penanganan heat stress.",
+        "Prioritaskan perlindungan bagi pekerja lapangan dan kelompok rentan.",
+      ],
+    },
+
+    Dermatitis: {
+      Aman: [],
+      Waspada: [
+        "Jaga kebersihan kulit setelah beraktivitas.",
+        "Gunakan pakaian yang bersih dan kering.",
+        "Hindari penggunaan produk yang memicu iritasi kulit.",
+      ],
+      Siaga: [
+        "Kurangi paparan lingkungan lembap dalam waktu lama.",
+        "Gunakan pelembap untuk menjaga kesehatan kulit.",
+        "Segera tangani ruam atau iritasi yang mulai muncul.",
+        "Perhatikan kebersihan pakaian dan tempat tidur.",
+      ],
+      Bahaya: [
+        "Lakukan pemeriksaan medis jika terjadi iritasi kulit berat.",
+        "Hindari kontak dengan bahan yang dapat memicu alergi.",
+        "Tingkatkan edukasi kebersihan kulit pada masyarakat.",
+        "Prioritaskan penanganan kelompok dengan riwayat penyakit kulit kronis.",
+      ],
+    },
+
   };
 
   return recommendations[disease][riskLevel];

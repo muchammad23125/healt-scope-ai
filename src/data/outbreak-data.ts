@@ -1,7 +1,12 @@
+export type DiseaseType =
+  | "DBD"
+  | "ISPA"
+  | "Leptospirosis"
+  | "Heat Stress"
+  | "Dermatitis";
+
 export interface OutbreakArea {
-
   shapeName: string;
-
   province: string;
 
   rainfall: number;
@@ -11,12 +16,7 @@ export interface OutbreakArea {
     | "warning"
     | "high";
 
-  disease:
-    | "DBD"
-    | "ISPA"
-    | "Diare"
-    | "Leptospirosis"
-    | null;
+  disease: DiseaseType | null;
 
   period: string;
 }
@@ -66,7 +66,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "Aceh",
     rainfall: 78,
     status: "high",
-    disease: "Diare",
+    disease: "Leptospirosis",
     period: "7-14 Hari",
   },
 
@@ -176,7 +176,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "Sumatera Utara",
     rainfall: 81,
     status: "high",
-    disease: "Diare",
+    disease: "Heat Stress",
     period: "7-14 Hari",
   },
 
@@ -270,7 +270,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "Riau",
     rainfall: 72,
     status: "high",
-    disease: "Diare",
+    disease: "Leptospirosis",
     period: "7-14 Hari",
   },
 
@@ -335,7 +335,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "DKI Jakarta",
     rainfall: 74,
     status: "high",
-    disease: "Diare",
+    disease: "Heat Stress",
     period: "7-14 Hari",
   },
 
@@ -411,7 +411,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "Jawa Tengah",
     rainfall: 83,
     status: "high",
-    disease: "Diare",
+    disease: "Dermatitis",
     period: "7-14 Hari",
   },
 
@@ -534,7 +534,7 @@ export const outbreakData: OutbreakArea[] = [
     province: "Bali",
     rainfall: 70,
     status: "high",
-    disease: "Diare",
+    disease: "Leptospirosis",
     period: "7-14 Hari",
   },
 

@@ -4,15 +4,18 @@ import { generateAiHealthAdvisory } from "./ai-health-advisory";
 import { generateAlertStatus } from "./alert-status";
 import { getDataSources, getModelInfo } from "./prediction-metadata";
 
-export type DiseaseType = "DBD" | "ISPA" | "Diare";
+import { predictDisease } from "./disease-predictor";
+
+export type DiseaseType =
+  | "DBD"
+  | "ISPA"
+  | "Leptospirosis"
+  | "Heat Stress"
+  | "Dermatitis";
 export type RiskLevel = "Aman" | "Waspada" | "Siaga" | "Bahaya";
 
 export type OutbreakPredictionInput = {
   region: string;
-
-  disease: DiseaseType;
-
-  forecastDays: 7 | 14;
 
   temperature: number;
 
@@ -26,11 +29,20 @@ export type OutbreakPredictionInput = {
 };
 
 export function predictOutbreakRisk(input: OutbreakPredictionInput) {
-  const climateResult = calculateClimateScore(input);
-
-  const finalRiskScore = Math.round(
-    climateResult.climateScore * 0.4 + input.riskScore * 0.6,
+  const diseaseResult = predictDisease(
+    input.temperature,
+    input.humidity,
+    input.rainfall,
   );
+
+  const predictedDisease = diseaseResult.primaryDisease;
+
+  const climateResult = calculateClimateScore(predictedDisease, input);
+
+  // const finalRiskScore = Math.round(
+  //   climateResult.climateScore * 0.4 + input.riskScore * 0.6,
+  // );
+  const finalRiskScore = input.riskScore;
 
   const vulnerabilityResult = {
     vulnerabilityLevel: input.riskStatus,
@@ -104,33 +116,50 @@ export function predictOutbreakRisk(input: OutbreakPredictionInput) {
   //   explainableFactors,
   //   vulnerabilityFactors: vulnerabilityResult.factors,
   // };
-  const forecastRange = `${input.forecastDays} hari ke depan`;
+
+  const forecastDays = 7;
+
+  const forecastRange = `${forecastDays} hari ke depan`;
+
   const confidence = Number(
     Math.min(0.95, 0.62 + finalRiskScore / 260).toFixed(2),
   );
 
   const warningNote = generateWarningNote({
     region: input.region,
-    disease: input.disease,
+    disease: predictedDisease,
     riskLevel,
-    forecastDays: input.forecastDays,
+    forecastDays,
     topFactors,
   });
 
-  const recommendations = generateRecommendations(input.disease, riskLevel);
+  const recommendations = generateRecommendations(predictedDisease, riskLevel);
 
   const basePrediction = {
     region: input.region,
-    disease: input.disease,
+
+    disease: predictedDisease,
+
+    diseaseScores: diseaseResult.diseaseScores,
+
     forecastRange,
+
     riskLevel,
+
     riskScore: finalRiskScore,
+
     vulnerabilityLevel: vulnerabilityResult.vulnerabilityLevel,
+
     vulnerabilityScore: vulnerabilityResult.vulnerabilityScore,
+
     confidence,
+
     warningNote,
+
     recommendations,
+
     explainableFactors,
+
     vulnerabilityFactors: vulnerabilityResult.factors,
   };
 
@@ -139,14 +168,23 @@ export function predictOutbreakRisk(input: OutbreakPredictionInput) {
 
     aiAdvisory: generateAiHealthAdvisory({
       region: input.region,
-      disease: input.disease,
+
+      disease: predictedDisease,
+
       forecastRange,
+
       riskLevel,
+
       riskScore: finalRiskScore,
+
       vulnerabilityLevel: vulnerabilityResult.vulnerabilityLevel,
+
       vulnerabilityScore: vulnerabilityResult.vulnerabilityScore,
+
       confidence,
+
       recommendations,
+
       explainableFactors,
     }),
 
@@ -170,7 +208,10 @@ export function predictOutbreakRisk(input: OutbreakPredictionInput) {
   };
 }
 
-function calculateClimateScore(input: OutbreakPredictionInput) {
+function calculateClimateScore(
+  disease: DiseaseType,
+  input: OutbreakPredictionInput,
+) {
   let score = 0;
 
   const factors: Array<{
@@ -180,9 +221,14 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
     description: string;
   }> = [];
 
-  if (input.disease === "DBD") {
+  /* =====================
+     DBD
+  ===================== */
+
+  if (disease === "DBD") {
     if (input.rainfall >= 30) {
       score += 35;
+
       factors.push({
         factor: "Curah Hujan",
         score: 90,
@@ -192,6 +238,7 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
       });
     } else if (input.rainfall >= 15) {
       score += 22;
+
       factors.push({
         factor: "Curah Hujan",
         score: 65,
@@ -203,6 +250,7 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
 
     if (input.humidity >= 80) {
       score += 25;
+
       factors.push({
         factor: "Kelembapan",
         score: 80,
@@ -214,21 +262,26 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
 
     if (input.temperature >= 26 && input.temperature <= 32) {
       score += 20;
+
       factors.push({
         factor: "Suhu",
         score: 70,
         impact: "Sedang",
-        description:
-          "Suhu berada pada rentang yang mendukung aktivitas vektor penyakit.",
+        description: "Suhu berada pada rentang ideal perkembangan vektor DBD.",
       });
     }
   }
 
-  if (input.disease === "ISPA") {
+  /* =====================
+     ISPA
+  ===================== */
+
+  if (disease === "ISPA") {
     if (input.humidity <= 60) {
       score += 25;
+
       factors.push({
-        factor: "Kelembapan",
+        factor: "Kelembapan Rendah",
         score: 70,
         impact: "Sedang",
         description:
@@ -236,39 +289,140 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
       });
     }
 
-
     if (input.temperature >= 33 || input.temperature <= 22) {
       score += 20;
+
       factors.push({
         factor: "Suhu Ekstrem",
         score: 75,
         impact: "Tinggi",
         description:
-          "Suhu ekstrem dapat memengaruhi daya tahan tubuh dan risiko gangguan pernapasan.",
+          "Suhu ekstrem dapat memengaruhi daya tahan tubuh dan risiko ISPA.",
       });
     }
   }
 
-  if (input.disease === "Diare") {
-    if (input.rainfall >= 25) {
-      score += 30;
+  /* =====================
+     LEPTOSPIROSIS
+  ===================== */
+
+  if (disease === "Leptospirosis") {
+    if (input.rainfall >= 20) {
+      score += 35;
+
       factors.push({
         factor: "Curah Hujan",
-        score: 80,
+        score: 85,
         impact: "Tinggi",
         description:
-          "Curah hujan tinggi dapat meningkatkan risiko kontaminasi air.",
+          "Curah hujan tinggi meningkatkan risiko genangan dan penyebaran bakteri leptospira.",
       });
     }
 
-    if (input.humidity >= 75) {
-      score += 15;
+    if (input.humidity >= 80) {
+      score += 25;
+
       factors.push({
         factor: "Kelembapan",
+        score: 75,
+        impact: "Tinggi",
+        description:
+          "Lingkungan lembap mendukung kelangsungan hidup bakteri leptospira.",
+      });
+    }
+
+    if (input.temperature >= 24 && input.temperature <= 32) {
+      score += 15;
+
+      factors.push({
+        factor: "Suhu",
+        score: 60,
+        impact: "Sedang",
+        description:
+          "Suhu hangat mendukung perkembangan bakteri pada lingkungan terbuka.",
+      });
+    }
+  }
+
+  /* =====================
+     HEAT STRESS
+  ===================== */
+
+  if (disease === "Heat Stress") {
+    if (input.temperature >= 34) {
+      score += 45;
+
+      factors.push({
+        factor: "Suhu Tinggi",
+        score: 95,
+        impact: "Tinggi",
+        description:
+          "Paparan suhu tinggi dapat menyebabkan heat stress dan dehidrasi.",
+      });
+    }
+
+    if (input.humidity >= 70) {
+      score += 20;
+
+      factors.push({
+        factor: "Kelembapan",
+        score: 65,
+        impact: "Sedang",
+        description:
+          "Kelembapan tinggi mengurangi efektivitas pendinginan alami tubuh.",
+      });
+    }
+
+    if (input.rainfall <= 5) {
+      score += 10;
+
+      factors.push({
+        factor: "Curah Hujan Rendah",
         score: 55,
         impact: "Sedang",
         description:
-          "Kelembapan tinggi dapat memperburuk kondisi sanitasi lingkungan.",
+          "Kondisi kering berkepanjangan meningkatkan risiko paparan panas.",
+      });
+    }
+  }
+
+  /* =====================
+     DERMATITIS
+  ===================== */
+
+  if (disease === "Dermatitis") {
+    if (input.humidity >= 80) {
+      score += 30;
+
+      factors.push({
+        factor: "Kelembapan Tinggi",
+        score: 85,
+        impact: "Tinggi",
+        description:
+          "Kelembapan tinggi dapat memicu iritasi dan gangguan kesehatan kulit.",
+      });
+    }
+
+    if (input.temperature >= 30) {
+      score += 20;
+
+      factors.push({
+        factor: "Suhu Panas",
+        score: 70,
+        impact: "Sedang",
+        description: "Cuaca panas dapat memperburuk kondisi kulit sensitif.",
+      });
+    }
+
+    if (input.rainfall >= 15) {
+      score += 10;
+
+      factors.push({
+        factor: "Curah Hujan",
+        score: 50,
+        impact: "Rendah",
+        description:
+          "Lingkungan lembap akibat hujan dapat memperburuk risiko dermatitis.",
       });
     }
   }
@@ -277,10 +431,6 @@ function calculateClimateScore(input: OutbreakPredictionInput) {
     climateScore: Math.min(score, 100),
     factors,
   };
-}
-
-function normalizeScore(value: number, maxValue: number) {
-  return Math.min(100, Math.max(0, (value / maxValue) * 100));
 }
 
 function getRiskLevel(score: number): RiskLevel {

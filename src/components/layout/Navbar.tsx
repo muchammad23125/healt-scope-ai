@@ -165,8 +165,8 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/prediksi-wabah"
-            className={menuClass("/prediksi-wabah")}
+            href="/peta-resiko"
+            className={menuClass("/peta-resiko")}
           >
             Peta Resiko
           </Link>
@@ -297,13 +297,13 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/prediksi-wabah"
+            href="/peta-resiko"
             onClick={() =>
               setMobileMenu(false)
             }
-            className={menuClass("/prediksi-wabah")}
+            className={menuClass("/peta-resiko")}
           >
-            Peta-resiko
+            Peta Resiko
           </Link>
 
           <Link

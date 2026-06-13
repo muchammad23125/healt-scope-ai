@@ -1,5 +1,5 @@
 type RiskLevel = "Aman" | "Waspada" | "Siaga" | "Bahaya";
-type DiseaseType = "DBD" | "ISPA" | "Diare";
+type DiseaseType =   | "DBD" | "ISPA" | "Leptospirosis" | "Heat Stress" | "Dermatitis";
 
 export function generateWarningNote(params: {
   region: string;

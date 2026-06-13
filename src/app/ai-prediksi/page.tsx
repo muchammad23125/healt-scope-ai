@@ -8,7 +8,6 @@ import ExplainableFactors from "@/components/prediction/ExplainableFactors";
 import RecommendationList from "@/components/prediction/RecommendationList";
 import AiAdvisoryPanel from "@/components/maps/AiAdvisoryPanel";
 
-type DiseaseType = "DBD" | "ISPA" | "Diare";
 
 export default function AiPrediksiPage() {
     const { userRisk } = useUserRisk();
@@ -17,13 +16,9 @@ export default function AiPrediksiPage() {
 
     const [loading, setLoading] = useState(false);
 
-    const [selectedDisease, setSelectedDisease] = useState<DiseaseType>("DBD");
-
-    async function runPrediction(type: DiseaseType) {
+    async function runPrediction() {
         try {
             setLoading(true);
-
-            setSelectedDisease(type);
 
             if (!userRisk) {
                 alert(
@@ -37,10 +32,6 @@ export default function AiPrediksiPage() {
 
             const payload = {
                 region: userRisk.region,
-
-                disease: type,
-
-                forecastDays: 7,
 
                 temperature: userRisk.temperature,
 
@@ -247,51 +238,111 @@ export default function AiPrediksiPage() {
                             Lokasi:
                             <strong> {userRisk.region}</strong>
                             {" • "}
-                            Status Risiko:
+                            Status:
                             <strong> {userRisk.riskStatus}</strong>
                             {" • "}
                             Risk Score:
-                            <strong> {userRisk.riskScore}</strong>
-                            {" • "}
-                            Prediksi:
-                            <strong> {userRisk.diseasePrediction}</strong>
+                            <strong> {userRisk.riskScore}/100</strong>
                         </p>
+
+                        <div
+                            className="
+      mt-4
+      grid
+      gap-3
+      sm:grid-cols-3
+    "
+                        >
+                            <div
+                                className="
+        rounded-xl
+        bg-white
+        p-3
+        border
+        border-slate-200
+      "
+                            >
+                                <p className="text-xs text-slate-500">
+                                    Suhu
+                                </p>
+
+                                <p className="font-semibold text-slate-900">
+                                    {userRisk.temperature}°C
+                                </p>
+                            </div>
+
+                            <div
+                                className="
+        rounded-xl
+        bg-white
+        p-3
+        border
+        border-slate-200
+      "
+                            >
+                                <p className="text-xs text-slate-500">
+                                    Kelembapan
+                                </p>
+
+                                <p className="font-semibold text-slate-900">
+                                    {userRisk.humidity}%
+                                </p>
+                            </div>
+
+                            <div
+                                className="
+        rounded-xl
+        bg-white
+        p-3
+        border
+        border-slate-200
+      "
+                            >
+                                <p className="text-xs text-slate-500">
+                                    Curah Hujan
+                                </p>
+
+                                <p className="font-semibold text-slate-900">
+                                    {userRisk.rain} mm
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* PILIH PENYAKIT */}
+                    {/* ANALISIS OTOMATIS */}
 
                     <div
                         className="
-      flex
-      flex-wrap
-      justify-center
-      gap-3
-      mb-6
-    "
+    flex
+    justify-center
+    mb-6
+  "
                     >
-                        {(["DBD", "ISPA", "Diare"] as DiseaseType[]).map((disease) => (
-                            <button
-                                key={disease}
-                                onClick={() => runPrediction(disease)}
-                                disabled={loading}
-                                className={`
+                        <button
+                            onClick={runPrediction}
+                            disabled={loading}
+                            className="
+      px-8
+      py-4
 
-          px-5
-          py-3
-          rounded-2xl
-          font-semibold
-          transition
+      rounded-2xl
 
-          ${selectedDisease === disease
-                                        ? "bg-teal-600 text-white"
-                                        : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                                    }
+      bg-teal-600
+      text-white
 
-        `}
-                            >
-                                Prediksi {disease}
-                            </button>
-                        ))}
+      font-semibold
+
+      transition
+      hover:bg-teal-700
+
+      disabled:opacity-50
+      disabled:cursor-not-allowed
+    "
+                        >
+                            {loading
+                                ? "Menganalisis Data Realtime..."
+                                : "Analisis Risiko Realtime"}
+                        </button>
                     </div>
 
                     {/* LOADING */}

@@ -1,105 +1,164 @@
 import { generateAiHealthAdvisory } from "@/services/aiAdvisory.service";
 import { generateAlertStatus } from "@/services/alertStatus.service";
+
 import {
   getDataSources,
   getModelInfo,
 } from "@/services/predictionMetadata.service";
 
-type DiseaseType = "DBD" | "ISPA" | "Diare";
-type AiRiskLevel = "Aman" | "Waspada" | "Siaga" | "Bahaya";
+export type DiseaseType =
+  | "DBD"
+  | "ISPA"
+  | "Leptospirosis"
+  | "Heat Stress"
+  | "Dermatitis";
 
-type ExplainableFactor = {
+export type AiRiskLevel =
+  | "Aman"
+  | "Waspada"
+  | "Siaga"
+  | "Bahaya";
+
+export type ExplainableFactor = {
   factor: string;
   score: number;
   impact: string;
   description: string;
 };
 
-type BasePrediction = {
+export type BasePrediction = {
   region: string;
+
   disease: DiseaseType;
+
   forecastRange: string;
+
   riskLevel: AiRiskLevel;
+
   riskScore: number;
+
   vulnerabilityLevel: string;
+
   vulnerabilityScore: number;
+
   confidence: number;
+
   warningNote: string;
+
   recommendations: string[];
+
   explainableFactors: ExplainableFactor[];
+
   vulnerabilityFactors?: unknown[];
 };
 
-export function calculateRisk(
-  curahHujan: number,
-  kelembapan: number,
-  suhu: number,
-) {
-  if (curahHujan > 200 && kelembapan > 80) {
-    return {
-      risk: "TINGGI",
-      confidence: 87,
-    };
-  }
+export function normalizeRiskLabelToAiLevel(
+  risk: string,
+): AiRiskLevel {
 
-  if (suhu > 34) {
-    return {
-      risk: "SEDANG",
-      confidence: 72,
-    };
-  }
+  const value =
+    risk.toLowerCase();
 
-  return {
-    risk: "RENDAH",
-    confidence: 45,
-  };
-}
-
-export function normalizeRiskLabelToAiLevel(risk: string): AiRiskLevel {
-  if (risk === "TINGGI" || risk === "Risiko Tinggi" || risk === "Bahaya") {
+  if (
+    value.includes("bahaya") ||
+    value.includes("tinggi")
+  ) {
     return "Bahaya";
   }
 
-  if (risk === "SEDANG" || risk === "Risiko Sedang" || risk === "Waspada") {
-    return "Waspada";
+  if (
+    value.includes("siaga")
+  ) {
+    return "Siaga";
   }
 
-  if (risk === "Siaga") {
-    return "Siaga";
+  if (
+    value.includes("waspada") ||
+    value.includes("sedang")
+  ) {
+    return "Waspada";
   }
 
   return "Aman";
 }
 
+export function calculateConfidence(
+  riskScore: number,
+) {
+
+  return Number(
+    Math.min(
+      0.95,
+      0.60 + riskScore / 250,
+    ).toFixed(2),
+  );
+
+}
+
 export function attachAiLayerToPrediction(
   basePrediction: BasePrediction,
-  inputSnapshot?: Record<string, unknown>,
+  inputSnapshot?: Record<
+    string,
+    unknown
+  >,
 ) {
+
   return {
+
     ...basePrediction,
 
-    aiAdvisory: generateAiHealthAdvisory({
-      region: basePrediction.region,
-      disease: basePrediction.disease,
-      forecastRange: basePrediction.forecastRange,
-      riskLevel: basePrediction.riskLevel,
-      riskScore: basePrediction.riskScore,
-      vulnerabilityLevel: basePrediction.vulnerabilityLevel,
-      vulnerabilityScore: basePrediction.vulnerabilityScore,
-      confidence: basePrediction.confidence,
-      recommendations: basePrediction.recommendations,
-      explainableFactors: basePrediction.explainableFactors,
-    }),
+    aiAdvisory:
+      generateAiHealthAdvisory({
 
-    alertStatus: generateAlertStatus(
-      basePrediction.riskLevel,
-      basePrediction.riskScore,
-    ),
+        region:
+          basePrediction.region,
 
-    modelInfo: getModelInfo(basePrediction.forecastRange),
+        disease:
+          basePrediction.disease,
 
-    dataSources: getDataSources(),
+        forecastRange:
+          basePrediction.forecastRange,
 
-    inputSnapshot: inputSnapshot ?? null,
+        riskLevel:
+          basePrediction.riskLevel,
+
+        riskScore:
+          basePrediction.riskScore,
+
+        vulnerabilityLevel:
+          basePrediction.vulnerabilityLevel,
+
+        vulnerabilityScore:
+          basePrediction.vulnerabilityScore,
+
+        confidence:
+          basePrediction.confidence,
+
+        recommendations:
+          basePrediction.recommendations,
+
+        explainableFactors:
+          basePrediction.explainableFactors,
+
+      }),
+
+    alertStatus:
+      generateAlertStatus(
+        basePrediction.riskLevel,
+        basePrediction.riskScore,
+      ),
+
+    modelInfo:
+      getModelInfo(
+        basePrediction.forecastRange,
+      ),
+
+    dataSources:
+      getDataSources(),
+
+    inputSnapshot:
+      inputSnapshot ?? null,
+
   };
+
 }

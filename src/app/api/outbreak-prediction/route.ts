@@ -7,11 +7,11 @@ export async function POST(request: Request) {
 
     const requiredFields = [
       "region",
-      "disease",
-      "forecastDays",
       "temperature",
       "humidity",
       "rainfall",
+      "riskScore",
+      "riskStatus",
     ];
 
     for (const field of requiredFields) {
@@ -21,18 +21,18 @@ export async function POST(request: Request) {
         body[field] === ""
       ) {
         return NextResponse.json(
-          { message: `Field ${field} wajib diisi.` },
-          { status: 400 },
+          {
+            message: `Field ${field} wajib diisi.`,
+          },
+          {
+            status: 400,
+          }
         );
       }
     }
 
     const result = predictOutbreakRisk({
       region: String(body.region),
-
-      disease: body.disease,
-
-      forecastDays: Number(body.forecastDays) === 14 ? 14 : 7,
 
       temperature: Number(body.temperature),
 
@@ -46,13 +46,21 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
+      success: true,
       message: "Prediksi risiko wabah berhasil.",
       data: result,
     });
   } catch (error) {
+    console.error("OUTBREAK API ERROR:", error);
+
     return NextResponse.json(
-      { message: "Gagal memproses prediksi risiko wabah." },
-      { status: 500 },
+      {
+        success: false,
+        message: "Gagal memproses prediksi risiko wabah.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

@@ -1,76 +1,78 @@
 "use client";
 
 import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
+    createContext,
+    useContext,
+    useState,
+    ReactNode,
 } from "react";
 
 export type UserRiskContextType = {
-  region: string;
-  province?: string;
+    region: string;
 
-  latitude: number;
-  longitude: number;
+    province?: string;
 
-  temperature: number;
-  humidity: number;
-  rain: number;
+    latitude: number;
 
-  riskScore: number;
-  riskStatus: string;
+    longitude: number;
 
-  diseasePrediction: string;
-  riskPeriod: string;
+    temperature: number;
+
+    humidity: number;
+
+    rain: number;
+
+    riskScore: number;
+
+    riskStatus: string;
 };
 
 type ContextType = {
-  userRisk: UserRiskContextType | null;
+    userRisk: UserRiskContextType | null;
 
-  setUserRisk: (
-    data: UserRiskContextType
-  ) => void;
+    setUserRisk: (
+        data: UserRiskContextType
+    ) => void;
 };
 
 const UserRiskContext =
-  createContext<ContextType | null>(
-    null
-  );
+    createContext<ContextType | null>(
+        null
+    );
 
 export function UserRiskProvider({
-  children,
+    children,
 }: {
-  children: ReactNode;
+    children: ReactNode;
 }) {
-  const [
-    userRisk,
-    setUserRisk,
-  ] = useState<UserRiskContextType | null>(
-    null
-  );
-
-  return (
-    <UserRiskContext.Provider
-      value={{
+    const [
         userRisk,
         setUserRisk,
-      }}
-    >
-      {children}
-    </UserRiskContext.Provider>
-  );
+    ] = useState<UserRiskContextType | null>(
+        null
+    );
+
+    return (
+        <UserRiskContext.Provider
+            value={{
+                userRisk,
+                setUserRisk,
+            }}
+        >
+            {children}
+        </UserRiskContext.Provider>
+    );
 }
 
 export function useUserRisk() {
-  const context =
-    useContext(UserRiskContext);
+    const context =
+        useContext(UserRiskContext);
 
-  if (!context) {
-    throw new Error(
-      "useUserRisk must be used inside UserRiskProvider"
-    );
-  }
+    if (!context) {
+        throw new Error(
+            "useUserRisk must be used inside UserRiskProvider"
+        );
+    }
 
-  return context;
+    return context;
 }

@@ -7,90 +7,43 @@ import ExplainableFactors from "@/components/prediction/ExplainableFactors";
 import RecommendationList from "@/components/prediction/RecommendationList";
 import AiAdvisoryPanel from "@/components/maps/AiAdvisoryPanel";
 
-const demoPayloads = {
-  DBD: {
-    region: "Surabaya",
-    disease: "DBD",
-    forecastDays: 7,
-    temperature: 29,
-    humidity: 88,
-    rainfall: 42,
-    windSpeed: 12,
-    populationDensity: 9000,
-    previousCases: 55,
-    searchTrendIndex: 82,
-    communityReports: 28,
-  },
-  ISPA: {
-    region: "Surabaya",
-    disease: "ISPA",
-    forecastDays: 7,
-    temperature: 34,
-    humidity: 55,
-    rainfall: 5,
-    windSpeed: 22,
-    populationDensity: 9200,
-    previousCases: 42,
-    searchTrendIndex: 68,
-    communityReports: 20,
-  },
-  Diare: {
-    region: "Surabaya",
-    disease: "Diare",
-    forecastDays: 7,
-    temperature: 30,
-    humidity: 78,
-    rainfall: 28,
-    windSpeed: 10,
-    populationDensity: 7800,
-    previousCases: 25,
-    searchTrendIndex: 61,
-    communityReports: 16,
-  },
-};
-
-type DiseaseType = "DBD" | "ISPA" | "Diare";
-
 type UserRiskContext = {
   region: string;
   province?: string;
+
   latitude: number;
   longitude: number;
+
   temperature: number;
   humidity: number;
   rain: number;
+
   riskScore: number;
   riskStatus: string;
-  diseasePrediction: string;
-  riskPeriod: string;
 };
 
 export default function PrediksiPage() {
   const [prediction, setPrediction] = useState<any>(null);
-  const [selectedDisease, setSelectedDisease] = useState<DiseaseType>("DBD");
   const [loading, setLoading] = useState(false);
   const [userRiskContext, setUserRiskContext] =
     useState<UserRiskContext | null>(null);
 
-  async function runPrediction(type: DiseaseType) {
+  async function runPrediction() {
     try {
       setLoading(true);
-      setSelectedDisease(type);
-
-      const basePayload = demoPayloads[type];
 
       const payload = {
-        ...basePayload,
-        region: userRiskContext?.region ?? basePayload.region,
-        temperature: userRiskContext?.temperature ?? basePayload.temperature,
-        humidity: userRiskContext?.humidity ?? basePayload.humidity,
-        rainfall: userRiskContext?.rain ?? basePayload.rainfall,
-        userLatitude: userRiskContext?.latitude,
-        userLongitude: userRiskContext?.longitude,
-        userRiskScore: userRiskContext?.riskScore,
-        userRiskStatus: userRiskContext?.riskStatus,
-        userDiseasePrediction: userRiskContext?.diseasePrediction,
-        userRiskPeriod: userRiskContext?.riskPeriod,
+        region: userRiskContext?.region,
+
+        temperature: userRiskContext?.temperature,
+
+        humidity: userRiskContext?.humidity,
+
+        rainfall: userRiskContext?.rain,
+
+        riskScore: userRiskContext?.riskScore,
+
+        riskStatus: userRiskContext?.riskStatus,
       };
 
       const response = await fetch("/api/outbreak-prediction", {
