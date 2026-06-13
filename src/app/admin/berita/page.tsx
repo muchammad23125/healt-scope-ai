@@ -1097,9 +1097,14 @@ export default function AdminBeritaPage() {
                         }))
                       }
                       rows={6}
+                      maxLength={5000}
                       placeholder="Tulis ringkasan atau arahan kewaspadaan penyakit..."
                       className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-50"
                     />
+                    <p className="mt-2 text-xs text-slate-500">
+                      Maksimal 5000 karakter untuk menjaga keterbacaan halaman
+                      detail berita.
+                    </p>
                   </div>
 
                   <div className="flex flex-col gap-3 sm:flex-row lg:col-span-2">

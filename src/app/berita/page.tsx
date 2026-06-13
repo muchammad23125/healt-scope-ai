@@ -1,77 +1,211 @@
-export default function BeritaPage() {
+import { supabase } from "@/lib/supabaseClient";
+import Link from "next/link";
 
-  const berita = [
-    {
-      id: 1,
-      kategori: "DBD",
-      tanggal: "12 Juni 2026",
-      title: "Kasus DBD Meningkat Saat Curah Hujan Tinggi",
-      desc: "Peningkatan curah hujan menyebabkan bertambahnya titik genangan air yang berpotensi menjadi sarang nyamuk Aedes aegypti.",
-      image:
-        "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop",
-    },
+export const dynamic = "force-dynamic";
 
-    {
-      id: 2,
-      kategori: "ISPA",
-      tanggal: "11 Juni 2026",
-      title: "Perubahan Cuaca Ekstrem Picu Risiko ISPA",
-      desc: "Perubahan suhu yang tidak stabil dapat meningkatkan risiko infeksi saluran pernapasan terutama pada anak dan lansia.",
-      image:
-        "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1200&auto=format&fit=crop",
-    },
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
-    {
-      id: 3,
-      kategori: "Leptospirosis",
-      tanggal: "10 Juni 2026",
-      title: "Waspadai Leptospirosis Setelah Banjir",
-      desc: "Kontak langsung dengan air yang terkontaminasi dapat meningkatkan risiko penyebaran penyakit leptospirosis.",
-      image:
-        "https://images.unsplash.com/photo-1547683905-f686c993aae5?q=80&w=1200&auto=format&fit=crop",
-    },
+type ArticleRow = {
+  id: string;
+  category_id: string | null;
+  title: string;
+  slug: string;
+  description: string;
+  image_url: string | null;
+  image_path: string | null;
+  published_date: string;
+  status: string;
+  created_at?: string;
+  categories: Category | Category[] | null;
+};
 
-    {
-      id: 4,
-      kategori: "DBD",
-      tanggal: "09 Juni 2026",
-      title: "Program PSN Dinilai Efektif Menekan DBD",
-      desc: "Gerakan pemberantasan sarang nyamuk secara rutin membantu menurunkan angka kasus DBD di beberapa wilayah.",
-      image:
-        "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?q=80&w=1200&auto=format&fit=crop",
-    },
+type BeritaItem = {
+  id: string | number;
+  kategori: string;
+  tanggal: string;
+  title: string;
+  desc: string;
+  image: string;
+  slug?: string;
+};
 
-    {
-      id: 5,
-      kategori: "ISPA",
-      tanggal: "08 Juni 2026",
-      title: "Polusi Udara Tingkatkan Risiko Gangguan Pernapasan",
-      desc: "Paparan polusi udara dalam jangka panjang dapat memicu berbagai penyakit pernapasan pada masyarakat.",
-      image:
-        "https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop",
-    },
+const dummyBerita: BeritaItem[] = [
+  {
+    id: 1,
+    kategori: "DBD",
+    tanggal: "12 Juni 2026",
+    title: "Kasus DBD Meningkat Saat Curah Hujan Tinggi",
+    desc: "Peningkatan curah hujan menyebabkan bertambahnya titik genangan air yang berpotensi menjadi sarang nyamuk Aedes aegypti.",
+    image:
+      "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop",
+  },
+  {
+    id: 2,
+    kategori: "ISPA",
+    tanggal: "11 Juni 2026",
+    title: "Perubahan Cuaca Ekstrem Picu Risiko ISPA",
+    desc: "Perubahan suhu yang tidak stabil dapat meningkatkan risiko infeksi saluran pernapasan terutama pada anak dan lansia.",
+    image:
+      "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1200&auto=format&fit=crop",
+  },
+  {
+    id: 3,
+    kategori: "Leptospirosis",
+    tanggal: "10 Juni 2026",
+    title: "Waspadai Leptospirosis Setelah Banjir",
+    desc: "Kontak langsung dengan air yang terkontaminasi dapat meningkatkan risiko penyebaran penyakit leptospirosis.",
+    image:
+      "https://images.unsplash.com/photo-1547683905-f686c993aae5?q=80&w=1200&auto=format&fit=crop",
+  },
+  {
+    id: 5,
+    kategori: "ISPA",
+    tanggal: "08 Juni 2026",
+    title: "Polusi Udara Tingkatkan Risiko Gangguan Pernapasan",
+    desc: "Paparan polusi udara dalam jangka panjang dapat memicu berbagai penyakit pernapasan pada masyarakat.",
+    image:
+      "https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop",
+  },
+  {
+    id: 6,
+    kategori: "Leptospirosis",
+    tanggal: "07 Juni 2026",
+    title: "Edukasi Sanitasi Jadi Kunci Pencegahan",
+    desc: "Kebersihan lingkungan dan pengelolaan sampah yang baik membantu menekan penyebaran penyakit berbasis lingkungan.",
+    image:
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",
+  },
+];
 
-    {
-      id: 6,
-      kategori: "Leptospirosis",
-      tanggal: "07 Juni 2026",
-      title: "Edukasi Sanitasi Jadi Kunci Pencegahan",
-      desc: "Kebersihan lingkungan dan pengelolaan sampah yang baik membantu menekan penyebaran penyakit berbasis lingkungan.",
-      image:
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",
-    },
-  ];
+function formatDate(dateString?: string | null) {
+  if (!dateString) return "-";
+
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(dateString));
+}
+
+function normalizeArticle(row: ArticleRow): BeritaItem {
+  const relation = Array.isArray(row.categories)
+    ? row.categories[0]
+    : row.categories;
+
+  return {
+    id: row.id,
+    kategori: relation?.name ?? "Tanpa Kategori",
+    tanggal: formatDate(row.published_date ?? row.created_at),
+    title: row.title,
+    desc: row.description,
+    image:
+      row.image_url ||
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?q=80&w=1200&auto=format&fit=crop",
+    slug: row.slug,
+  };
+}
+
+async function getPublicBerita(): Promise<BeritaItem[]> {
+  const { data, error } = await supabase
+    .from("articles")
+    .select(
+      `
+      id,
+      category_id,
+      title,
+      slug,
+      description,
+      image_url,
+      image_path,
+      published_date,
+      status,
+      created_at,
+      categories:category_id (
+        id,
+        name,
+        slug
+      )
+    `,
+    )
+    .eq("status", "published")
+    .order("published_date", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Gagal mengambil berita dari Supabase:", error.message);
+    return dummyBerita;
+  }
+
+  if (!data || data.length === 0) {
+    return dummyBerita;
+  }
+
+  return ((data ?? []) as ArticleRow[]).map(normalizeArticle);
+}
+
+export default async function BeritaPage() {
+  // const berita = [
+  //   {
+  //     id: 1,
+  //     kategori: "DBD",
+  //     tanggal: "12 Juni 2026",
+  //     title: "Kasus DBD Meningkat Saat Curah Hujan Tinggi",
+  //     desc: "Peningkatan curah hujan menyebabkan bertambahnya titik genangan air yang berpotensi menjadi sarang nyamuk Aedes aegypti.",
+  //     image:
+  //       "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop",
+  //   },
+
+  //   {
+  //     id: 2,
+  //     kategori: "ISPA",
+  //     tanggal: "11 Juni 2026",
+  //     title: "Perubahan Cuaca Ekstrem Picu Risiko ISPA",
+  //     desc: "Perubahan suhu yang tidak stabil dapat meningkatkan risiko infeksi saluran pernapasan terutama pada anak dan lansia.",
+  //     image:
+  //       "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1200&auto=format&fit=crop",
+  //   },
+
+  //   {
+  //     id: 3,
+  //     kategori: "Leptospirosis",
+  //     tanggal: "10 Juni 2026",
+  //     title: "Waspadai Leptospirosis Setelah Banjir",
+  //     desc: "Kontak langsung dengan air yang terkontaminasi dapat meningkatkan risiko penyebaran penyakit leptospirosis.",
+  //     image:
+  //       "https://images.unsplash.com/photo-1547683905-f686c993aae5?q=80&w=1200&auto=format&fit=crop",
+  //   },
+  //   {
+  //     id: 5,
+  //     kategori: "ISPA",
+  //     tanggal: "08 Juni 2026",
+  //     title: "Polusi Udara Tingkatkan Risiko Gangguan Pernapasan",
+  //     desc: "Paparan polusi udara dalam jangka panjang dapat memicu berbagai penyakit pernapasan pada masyarakat.",
+  //     image:
+  //       "https://images.unsplash.com/photo-1600959907703-125ba1374a12?q=80&w=1200&auto=format&fit=crop",
+  //   },
+
+  //   {
+  //     id: 6,
+  //     kategori: "Leptospirosis",
+  //     tanggal: "07 Juni 2026",
+  //     title: "Edukasi Sanitasi Jadi Kunci Pencegahan",
+  //     desc: "Kebersihan lingkungan dan pengelolaan sampah yang baik membantu menekan penyebaran penyakit berbasis lingkungan.",
+  //     image:
+  //       "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",
+  //   },
+  // ];
+  const berita = await getPublicBerita();
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen">
-
       {/* HERO */}
       <section className="bg-gradient-to-br from-[#EAF7F8] via-white to-[#F0FDFA]">
-
         <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-6 py-16 md:py-20">
-
           <div className="max-w-3xl">
-
             <span
               className="
                 inline-flex
@@ -82,8 +216,7 @@ export default function BeritaPage() {
                 text-teal-700
                 text-sm
                 font-semibold
-              "
-            >
+              ">
               Informasi Kesehatan Terkini
             </span>
 
@@ -102,8 +235,7 @@ export default function BeritaPage() {
 
                 font-bold
                 text-slate-900
-              "
-            >
+              ">
               Berita Kesehatan
             </h1>
 
@@ -118,25 +250,18 @@ export default function BeritaPage() {
 
                 md:text-lg
                 max-w-2xl
-              "
-            >
-              Ikuti perkembangan terbaru terkait penyakit,
-              kondisi lingkungan, serta informasi kesehatan
-              masyarakat yang dapat membantu meningkatkan
-              kewaspadaan terhadap risiko wabah.
+              ">
+              Ikuti perkembangan terbaru terkait penyakit, kondisi lingkungan,
+              serta informasi kesehatan masyarakat yang dapat membantu
+              meningkatkan kewaspadaan terhadap risiko wabah.
             </p>
-
           </div>
-
         </div>
-
       </section>
 
       {/* LIST BERITA */}
       <section className="py-12 md:py-16">
-
         <div className="max-w-7xl mx-auto px-5 md:px-8 lg:px-6">
-
           <div
             className="
         grid
@@ -144,11 +269,8 @@ export default function BeritaPage() {
         md:grid-cols-2
         xl:grid-cols-3
         gap-8
-      "
-          >
-
+      ">
             {berita.map((item) => (
-
               <article
                 key={item.id}
                 className="
@@ -170,12 +292,9 @@ export default function BeritaPage() {
 
             transition-all
             duration-300
-          "
-              >
-
+          ">
                 {/* IMAGE */}
                 <div className="relative">
-
                   <img
                     src={item.image}
                     alt={item.title}
@@ -204,19 +323,14 @@ export default function BeritaPage() {
                 font-bold
 
                 text-[#0F766E]
-              "
-                  >
+              ">
                     {item.kategori}
                   </div>
-
                 </div>
 
                 {/* CONTENT */}
                 <div className="p-6">
-
-                  <p className="text-sm text-slate-400">
-                    {item.tanggal}
-                  </p>
+                  <p className="text-sm text-slate-400">{item.tanggal}</p>
 
                   <h2
                     className="
@@ -229,8 +343,7 @@ export default function BeritaPage() {
                 text-slate-900
 
                 line-clamp-2
-              "
-                  >
+              ">
                     {item.title}
                   </h2>
 
@@ -243,38 +356,30 @@ export default function BeritaPage() {
                 leading-7
 
                 line-clamp-3
-              "
-                  >
+              ">
                     {item.desc}
                   </p>
 
-                  <button
+                  <Link
+                    href={`/berita/${item.slug}`}
                     className="
-                mt-5
+                    mt-5
 
-                text-[#0F766E]
-                font-semibold
+                    text-[#0F766E]
+                    font-semibold
 
-                group-hover:translate-x-1
+                    group-hover:translate-x-1
 
-                transition-all
-              "
-                  >
+                    transition-all
+                  ">
                     Baca Selengkapnya →
-                  </button>
-
+                  </Link>
                 </div>
-
               </article>
-
             ))}
-
           </div>
-
         </div>
-
       </section>
-
     </main>
   );
 }

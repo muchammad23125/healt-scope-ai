@@ -11,13 +11,10 @@ import {
 export default function HomePage() {
   return (
     <main className="bg-[#F8FAFC] overflow-hidden">
-
       {/* HERO */}
       <section className="relative min-h-[100svh] lg:min-h-screen bg-[#EAF7F8] overflow-hidden">
-
         {/* FULL BACKGROUND IMAGE */}
         <div className="absolute inset-0 z-0">
-
           <img
             src="/images/bg-placeholder.png"
             alt="GIS Background"
@@ -30,7 +27,6 @@ export default function HomePage() {
         object-center
       "
           />
-
         </div>
 
         {/* OVERLAY */}
@@ -38,7 +34,6 @@ export default function HomePage() {
 
         {/* CONTENT */}
         <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 lg:px-6">
-
           <div
             className="
         min-h-[100svh]
@@ -53,12 +48,9 @@ export default function HomePage() {
         py-16
         md:py-20
         lg:py-0
-      "
-          >
-
+      ">
             {/* LEFT CONTENT */}
             <div className="max-w-2xl">
-
               <h1
                 className="
             text-[42px]
@@ -73,14 +65,10 @@ export default function HomePage() {
             font-extrabold
             text-slate-900
             tracking-[-2px]
-          "
-              >
+          ">
                 Waspada Dini,
                 <br />
-                Hidup Lebih{" "}
-                <span className="text-[#0F766E]">
-                  Sehat
-                </span>
+                Hidup Lebih <span className="text-[#0F766E]">Sehat</span>
               </h1>
 
               <p
@@ -99,8 +87,7 @@ export default function HomePage() {
 
             text-slate-600
             max-w-2xl
-          "
-              >
+          ">
                 Health Scope adalah sistem peringatan dini risiko penyakit
                 berbasis data cuaca, historis kesehatan, dan tren pencarian
                 masyarakat.
@@ -108,7 +95,6 @@ export default function HomePage() {
 
               {/* FEATURE CARDS */}
               <div className="mt-10 flex flex-wrap gap-5">
-
                 {/* CARD */}
                 <div
                   className="
@@ -130,9 +116,7 @@ export default function HomePage() {
               sm:w-auto
 
               lg:min-w-[240px]
-            "
-                >
-
+            ">
                   <div
                     className="
                 w-14
@@ -143,8 +127,7 @@ export default function HomePage() {
                 flex
                 items-center
                 justify-center
-              "
-                  >
+              ">
                     <CloudRain className="text-cyan-600 w-7 h-7" />
                   </div>
 
@@ -153,11 +136,8 @@ export default function HomePage() {
                       Data Cuaca
                     </p>
 
-                    <p className="text-slate-500">
-                      Real-time
-                    </p>
+                    <p className="text-slate-500">Real-time</p>
                   </div>
-
                 </div>
 
                 {/* CARD */}
@@ -181,9 +161,7 @@ export default function HomePage() {
               sm:w-auto
 
               lg:min-w-[240px]
-            "
-                >
-
+            ">
                   <div
                     className="
                 w-14
@@ -194,8 +172,7 @@ export default function HomePage() {
                 flex
                 items-center
                 justify-center
-              "
-                  >
+              ">
                     <Activity className="text-emerald-600 w-7 h-7" />
                   </div>
 
@@ -204,11 +181,8 @@ export default function HomePage() {
                       Prediksi Risiko
                     </p>
 
-                    <p className="text-slate-500">
-                      3–7 Hari
-                    </p>
+                    <p className="text-slate-500">3–7 Hari</p>
                   </div>
-
                 </div>
 
                 {/* CARD */}
@@ -232,9 +206,7 @@ export default function HomePage() {
               sm:w-auto
 
               lg:min-w-[240px]
-            "
-                >
-
+            ">
                   <div
                     className="
                 w-14
@@ -245,8 +217,7 @@ export default function HomePage() {
                 flex
                 items-center
                 justify-center
-              "
-                  >
+              ">
                     <HeartPulse className="text-red-500 w-7 h-7" />
                   </div>
 
@@ -255,20 +226,14 @@ export default function HomePage() {
                       Lindungi Diri
                     </p>
 
-                    <p className="text-slate-500">
-                      dan Sesama
-                    </p>
+                    <p className="text-slate-500">dan Sesama</p>
                   </div>
-
                 </div>
-
               </div>
 
               {/* CTA */}
               <div className="mt-12 flex flex-wrap items-center gap-8">
-
                 <Link href="/ai-prediksi">
-
                   <button
                     className="
                 bg-[#0F766E]
@@ -297,31 +262,22 @@ export default function HomePage() {
                 items-center
                 justify-center
                 gap-3
-              "
-                  >
+              ">
                     Mulai Prediksi Sekarang
-
                     <ArrowRight className="w-5 h-5" />
                   </button>
-
                 </Link>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
 
       {/* TENTANG */}
       <section className="py-24 bg-[#F8FAFC]">
-
         <div className="max-w-7xl mx-auto px-6">
-
-          <div className="
+          <div
+            className="
             bg-white
             rounded-[40px]
             shadow-xl
@@ -332,13 +288,11 @@ export default function HomePage() {
             lg:grid-cols-2
             gap-16
           ">
-
             {/* LEFT */}
             <div>
-
               <div className="flex items-center gap-4">
-
-                <div className="
+                <div
+                  className="
                   w-14
                   h-14
                   rounded-2xl
@@ -353,35 +307,30 @@ export default function HomePage() {
                 <h2 className="text-4xl font-bold text-slate-900">
                   Tentang Health Scope
                 </h2>
-
               </div>
 
-              <p className="
+              <p
+                className="
                 mt-8
                 text-lg
                 leading-[36px]
                 text-slate-600
               ">
-                Health Scope dikembangkan untuk membantu masyarakat
-                mendapatkan informasi risiko penyakit lebih awal
-                berdasarkan perubahan cuaca dan pola data kesehatan.
+                Health Scope dikembangkan untuk membantu masyarakat mendapatkan
+                informasi risiko penyakit lebih awal berdasarkan perubahan cuaca
+                dan pola data kesehatan.
               </p>
 
               <div className="mt-10 space-y-5">
-
                 {[
                   "Memanfaatkan data cuaca real-time",
                   "Mengintegrasikan data historis kesehatan",
                   "Menganalisis tren pencarian masyarakat",
                   "Prediksi risiko penyakit berbasis wilayah",
                 ].map((item) => (
-
-                  <div
-                    key={item}
-                    className="flex items-center gap-4"
-                  >
-
-                    <div className="
+                  <div key={item} className="flex items-center gap-4">
+                    <div
+                      className="
                       w-7
                       h-7
                       rounded-full
@@ -394,27 +343,19 @@ export default function HomePage() {
                       ✅
                     </div>
 
-                    <p className="text-lg text-slate-700">
-                      {item}
-                    </p>
-
+                    <p className="text-lg text-slate-700">{item}</p>
                   </div>
-
                 ))}
-
               </div>
-
             </div>
 
             {/* RIGHT */}
             <div>
-
               <h2 className="text-4xl font-bold text-slate-900">
                 Cara Menggunakan
               </h2>
 
               <div className="mt-12 space-y-10">
-
                 {[
                   {
                     step: "1",
@@ -435,13 +376,9 @@ export default function HomePage() {
                     color: "bg-red-100",
                   },
                 ].map((item) => (
-
-                  <div
-                    key={item.step}
-                    className="flex gap-6"
-                  >
-
-                    <div className={`
+                  <div key={item.step} className="flex gap-6">
+                    <div
+                      className={`
                       w-16
                       h-16
                       rounded-full
@@ -458,12 +395,12 @@ export default function HomePage() {
                     </div>
 
                     <div>
-
                       <h3 className="text-2xl font-bold text-slate-900">
                         {item.title}
                       </h3>
 
-                      <p className="
+                      <p
+                        className="
                         mt-3
                         text-lg
                         leading-[32px]
@@ -471,53 +408,42 @@ export default function HomePage() {
                       ">
                         {item.desc}
                       </p>
-
                     </div>
-
                   </div>
-
                 ))}
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
-
 
       {/* BERITA TERKINI */}
       <section className="pb-24 bg-[#F8FAFC]">
-
         <div className="max-w-7xl mx-auto px-6">
-
           {/* HEADER */}
 
           <div className="flex items-center justify-between mb-10">
-
             <h2 className="text-4xl font-bold text-slate-900">
               Berita Kesehatan Terkini
             </h2>
 
-            <button className="
-        text-[#0F766E]
-        font-bold
-        hover:opacity-70
-        transition-all
-      ">
+            <Link
+              href="/berita"
+              className="
+    text-[#0F766E]
+    font-bold
+    hover:opacity-70
+    transition-all
+  ">
               Lihat Semua Berita →
-            </button>
-
+            </Link>
           </div>
 
           {/* GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-7">
-
             {/* CARD 1 */}
-            <div className="
+            <div
+              className="
         bg-white
         rounded-[28px]
         overflow-hidden
@@ -527,16 +453,15 @@ export default function HomePage() {
         hover:-translate-y-1
         transition-all
       ">
-
               <div className="relative">
-
                 <img
                   src="https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=1200&auto=format&fit=crop"
                   alt="DBD"
                   className="w-full h-[210px] object-cover"
                 />
 
-                <div className="
+                <div
+                  className="
             absolute
             top-4
             left-4
@@ -550,16 +475,13 @@ export default function HomePage() {
           ">
                   DBD
                 </div>
-
               </div>
 
               <div className="p-6">
+                <p className="text-sm text-slate-400">28 Mei 2025</p>
 
-                <p className="text-sm text-slate-400">
-                  28 Mei 2025
-                </p>
-
-                <h3 className="
+                <h3
+                  className="
             mt-3
             text-xl
             font-bold
@@ -569,22 +491,21 @@ export default function HomePage() {
                   Kasus DBD Meningkat di Musim Penghujan
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-4
             text-slate-600
             leading-[30px]
           ">
-                  Dinas kesehatan mengimbau masyarakat
-                  untuk menjaga kebersihan lingkungan
-                  dan mencegah genangan air.
+                  Dinas kesehatan mengimbau masyarakat untuk menjaga kebersihan
+                  lingkungan dan mencegah genangan air.
                 </p>
-
               </div>
-
             </div>
 
             {/* CARD 2 */}
-            <div className="
+            <div
+              className="
         bg-white
         rounded-[28px]
         overflow-hidden
@@ -594,16 +515,15 @@ export default function HomePage() {
         hover:-translate-y-1
         transition-all
       ">
-
               <div className="relative">
-
                 <img
                   src="https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1200&auto=format&fit=crop"
                   alt="ISPA"
                   className="w-full h-[210px] object-cover"
                 />
 
-                <div className="
+                <div
+                  className="
             absolute
             top-4
             left-4
@@ -617,16 +537,13 @@ export default function HomePage() {
           ">
                   ISPA
                 </div>
-
               </div>
 
               <div className="p-6">
+                <p className="text-sm text-slate-400">27 Mei 2025</p>
 
-                <p className="text-sm text-slate-400">
-                  27 Mei 2025
-                </p>
-
-                <h3 className="
+                <h3
+                  className="
             mt-3
             text-xl
             font-bold
@@ -636,21 +553,21 @@ export default function HomePage() {
                   Perubahan Cuaca Picu Peningkatan Kasus ISPA
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-4
             text-slate-600
             leading-[30px]
           ">
-                  Cuaca tidak menentu dapat melemahkan
-                  sistem imun terutama pada anak dan lansia.
+                  Cuaca tidak menentu dapat melemahkan sistem imun terutama pada
+                  anak dan lansia.
                 </p>
-
               </div>
-
             </div>
 
             {/* CARD 3 */}
-            <div className="
+            <div
+              className="
         bg-white
         rounded-[28px]
         overflow-hidden
@@ -660,16 +577,15 @@ export default function HomePage() {
         hover:-translate-y-1
         transition-all
       ">
-
               <div className="relative">
-
                 <img
                   src="https://images.unsplash.com/photo-1547683905-f686c993aae5?q=80&w=1200&auto=format&fit=crop"
                   alt="Leptospirosis"
                   className="w-full h-[210px] object-cover"
                 />
 
-                <div className="
+                <div
+                  className="
             absolute
             top-4
             left-4
@@ -683,16 +599,13 @@ export default function HomePage() {
           ">
                   Leptospirosis
                 </div>
-
               </div>
 
               <div className="p-6">
+                <p className="text-sm text-slate-400">26 Mei 2025</p>
 
-                <p className="text-sm text-slate-400">
-                  26 Mei 2025
-                </p>
-
-                <h3 className="
+                <h3
+                  className="
             mt-3
             text-xl
             font-bold
@@ -702,21 +615,21 @@ export default function HomePage() {
                   Waspadai Leptospirosis saat Banjir
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-4
             text-slate-600
             leading-[30px]
           ">
-                  Hindari kontak langsung dengan air banjir
-                  dan gunakan perlindungan diri.
+                  Hindari kontak langsung dengan air banjir dan gunakan
+                  perlindungan diri.
                 </p>
-
               </div>
-
             </div>
 
             {/* CARD 4 */}
-            <div className="
+            <div
+              className="
         bg-white
         rounded-[28px]
         overflow-hidden
@@ -726,16 +639,15 @@ export default function HomePage() {
         hover:-translate-y-1
         transition-all
       ">
-
               <div className="relative">
-
                 <img
                   src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"
                   alt="Diare"
                   className="w-full h-[210px] object-cover"
                 />
 
-                <div className="
+                <div
+                  className="
             absolute
             top-4
             left-4
@@ -749,16 +661,13 @@ export default function HomePage() {
           ">
                   Diare
                 </div>
-
               </div>
 
               <div className="p-6">
+                <p className="text-sm text-slate-400">25 Mei 2025</p>
 
-                <p className="text-sm text-slate-400">
-                  25 Mei 2025
-                </p>
-
-                <h3 className="
+                <h3
+                  className="
             mt-3
             text-xl
             font-bold
@@ -768,34 +677,28 @@ export default function HomePage() {
                   Diare Masih Menjadi Penyakit Tertinggi
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-4
             text-slate-600
             leading-[30px]
           ">
-                  Pastikan makanan dan minuman
-                  dikonsumsi dalam kondisi higienis.
+                  Pastikan makanan dan minuman dikonsumsi dalam kondisi
+                  higienis.
                 </p>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
 
       {/* DAMPAK PENGGUNAAN SISTEM */}
       <section className="py-24 bg-[#F5FBFB] overflow-hidden">
-
         <div className="max-w-[1800px] mx-auto px-8">
-
           {/* HEADER */}
           <div className="text-center">
-
-            <h2 className="
+            <h2
+              className="
         text-[52px]
         leading-[62px]
         font-extrabold
@@ -804,7 +707,8 @@ export default function HomePage() {
               Dampak Penggunaan Sistem
             </h2>
 
-            <p className="
+            <p
+              className="
         mt-6
         text-[20px]
         leading-[38px]
@@ -812,15 +716,15 @@ export default function HomePage() {
         max-w-4xl
         mx-auto
       ">
-              Health Scope membantu meningkatkan kewaspadaan,
-              mitigasi, dan pengambilan keputusan kesehatan
-              masyarakat secara lebih cepat dan akurat.
+              Health Scope membantu meningkatkan kewaspadaan, mitigasi, dan
+              pengambilan keputusan kesehatan masyarakat secara lebih cepat dan
+              akurat.
             </p>
-
           </div>
 
           {/* WRAPPER */}
-          <div className="
+          <div
+            className="
       mt-16
       bg-gradient-to-br
       from-[#DDF7F3]
@@ -832,18 +736,18 @@ export default function HomePage() {
       border-white/70
       shadow-[0_20px_60px_rgba(15,118,110,0.08)]
     ">
-
             {/* HORIZONTAL CARD */}
-            <div className="
+            <div
+              className="
         grid
         grid-cols-1
         md:grid-cols-2
         xl:grid-cols-6
         gap-6
       ">
-
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -855,8 +759,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -870,32 +774,32 @@ export default function HomePage() {
                   ⏱️
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
             font-bold
             text-slate-900
           ">
-                  Prediksi Risiko
-                  Lebih Cepat
+                  Prediksi Risiko Lebih Cepat
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Sistem mendeteksi potensi
-                  peningkatan penyakit lebih awal
+                  Sistem mendeteksi potensi peningkatan penyakit lebih awal
                   berdasarkan data real-time.
                 </p>
-
               </div>
 
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -907,8 +811,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -922,7 +826,8 @@ export default function HomePage() {
                   🔔
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
@@ -932,21 +837,21 @@ export default function HomePage() {
                   Peringatan Dini
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Membantu mitigasi dilakukan
-                  sebelum penyebaran penyakit
+                  Membantu mitigasi dilakukan sebelum penyebaran penyakit
                   meningkat lebih luas.
                 </p>
-
               </div>
 
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -958,8 +863,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -973,32 +878,32 @@ export default function HomePage() {
                   👥
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
             font-bold
             text-slate-900
           ">
-                  Kesadaran
-                  Masyarakat
+                  Kesadaran Masyarakat
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Informasi prediksi membantu
-                  masyarakat lebih waspada
-                  terhadap risiko penyakit.
+                  Informasi prediksi membantu masyarakat lebih waspada terhadap
+                  risiko penyakit.
                 </p>
-
               </div>
 
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -1010,8 +915,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -1025,32 +930,32 @@ export default function HomePage() {
                   📊
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
             font-bold
             text-slate-900
           ">
-                  Pengambilan
-                  Keputusan
+                  Pengambilan Keputusan
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Membantu menentukan prioritas
-                  tindakan kesehatan berdasarkan
+                  Membantu menentukan prioritas tindakan kesehatan berdasarkan
                   analisis wilayah risiko.
                 </p>
-
               </div>
 
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -1062,8 +967,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -1077,32 +982,32 @@ export default function HomePage() {
                   🏥
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
             font-bold
             text-slate-900
           ">
-                  Optimalisasi
-                  Fasilitas
+                  Optimalisasi Fasilitas
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Distribusi tenaga kesehatan
-                  dan fasilitas menjadi lebih
+                  Distribusi tenaga kesehatan dan fasilitas menjadi lebih
                   efektif dan tepat sasaran.
                 </p>
-
               </div>
 
               {/* CARD */}
-              <div className="
+              <div
+                className="
           bg-white
           rounded-[30px]
           p-7
@@ -1114,8 +1019,8 @@ export default function HomePage() {
           transition-all
           duration-300
         ">
-
-                <div className="
+                <div
+                  className="
             w-20
             h-20
             mx-auto
@@ -1129,38 +1034,32 @@ export default function HomePage() {
                   🛡️
                 </div>
 
-                <h3 className="
+                <h3
+                  className="
             mt-6
             text-[24px]
             leading-[34px]
             font-bold
             text-slate-900
           ">
-                  Pencegahan
-                  Penyakit
+                  Pencegahan Penyakit
                 </h3>
 
-                <p className="
+                <p
+                  className="
             mt-5
             text-[15px]
             leading-[30px]
             text-slate-600
           ">
-                  Membantu menekan potensi
-                  penyebaran penyakit secara
-                  lebih cepat dan efektif.
+                  Membantu menekan potensi penyebaran penyakit secara lebih
+                  cepat dan efektif.
                 </p>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
-
     </main>
   );
 }
